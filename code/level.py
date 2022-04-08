@@ -1,7 +1,7 @@
 import pygame
 from setting import *
 from support import import_csv_layout
-from tile import Basic_Tile, CollectableFruit, Saw, FallingPlatform
+from tile import Basic_Tile, CollectableFruit, Saw, BouncePlatform
 from player import Player
 from effect import Collect_effect, Player_effect
 from debug import debug
@@ -18,7 +18,7 @@ class Level:
         self.collectable_sprites = pygame.sprite.Group()
         self.effect_sprites = pygame.sprite.Group()
         self.damageable_sprites = pygame.sprite.Group()
-        self.falling_sprites = pygame.sprite.Group()
+        self.bouncePlatforms = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
 
         # setup level
@@ -32,7 +32,7 @@ class Level:
         Player_effect((64, 230), 'Enter', [self.effect_sprites], self.create_player)
 
     def setup_layout(self):
-        #FallingPlatform((230, 260), [self.falling_sprites, self.obstacle_sprites], self.player.sprite)
+        BouncePlatform((128, 308), [self.bouncePlatforms])
         layouts = {
             'obstacle_block': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_StaticTiles.csv'),
             'CollectableFruit': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_CollectableFruits.csv'),
@@ -79,6 +79,14 @@ class Level:
             if player.hitbox.colliderect(sprite.hitbox):
                 player.status = 'Hurt'
 
+    def check_bounce(self):
+        player = self.player.sprite
+        for sprite in self.bouncePlatforms.sprites():
+            if player.hitbox.colliderect(sprite.hitbox):
+                sprite.status = 'Hit'
+                player.direction.y = -4
+                player.double_jump = True
+
     def check_game_stage(self):
         player = self.player.sprite
         if player.alive == False:
@@ -100,15 +108,14 @@ class Level:
         self.collectable_sprites.update(dt)
         self.collectable_sprites.draw(self.display_surface)
 
-        # Falling
-        if self.game_state == 'Running':
-            self.falling_sprites.update(dt)
-            self.falling_sprites.draw(self.display_surface)
-
         # Player
         if self.game_state == 'Running':
             self.player.update(dt)
             self.player.draw(self.display_surface)
+
+        # BouncePlatform
+        self.bouncePlatforms.draw(self.display_surface)
+        self.bouncePlatforms.update(dt)
 
         # Spike
         self.damageable_sprites.update(dt)
@@ -124,6 +131,6 @@ class Level:
         elif self.game_state == 'Running':
             self.check_collect()
             self.check_damage()
-            self.check_game_stage()
+            self.check_bounce()
             player = self.player.sprite
             debug('player_status', player.status, self.display_surface, 30)

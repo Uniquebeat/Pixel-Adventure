@@ -104,23 +104,38 @@ class FallingPlatform(pygame.sprite.Sprite):
         self.animate(dt)
         self.check()
 
-
-class TestTile(pygame.sprite.Sprite):
+class BouncePlatform(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
-        self.image = pygame.Surface((32, 10))
+        self.image = pygame.image.load('../graphics/Traps/BouncePlatform/Idle/0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect
-        self.done = False
+        self.hitbox = self.rect.inflate(-2, -18)
 
-        self.timer_index = 0
-        self.timer_speed = 0.28
+        # animations 
+        self.import_assets()
+        self.frame_index = 0
+        self.animation_speed = 18
+        self.status = 'Idle'
 
-    def timer(self):
-        self.timer_index += self.timer_speed
-        if self.timer_index >= 2:
-            self.done = True
+    def import_assets(self):
+        self.animations = {
+                'Idle' : [], 'Hit' : []
+                }
+        path = '../graphics/Traps/BouncePlatform'
+        for animation in self.animations.keys():
+            fullpath = path + '/' + animation
+            self.animations[animation] = import_folder(fullpath)
 
-    def update(self):
-        if self.done == True:
-            self.kill()
+    def animate(self, dt):
+        animations = self.animations[self.status]
+        self.frame_index += self.animation_speed * dt
+        if self.frame_index >= len(animations) and self.status == 'Idle':
+            self.frame_index = 0
+        elif self.frame_index >= len(animations) and self.status == 'Hit':
+            self.frame_index = 0
+            self.status = 'Idle'
+        self.image = animations[int(self.frame_index)]
+
+    def update(self, dt):
+        self.animate(dt)
+
