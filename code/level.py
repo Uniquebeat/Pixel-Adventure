@@ -1,7 +1,7 @@
 import pygame
 from setting import *
 from support import import_csv_layout
-from tile import Basic_Tile, CollectableFruit, Saw, BouncePlatform
+from tile import Basic_Tile, CollectableFruit, Saw, FallingPlatform, BouncePlatform
 from player import Player
 from effect import Collect_effect, Player_effect
 from debug import debug
@@ -11,14 +11,15 @@ class Level:
     def __init__(self, surface):
         self.display_surface = surface
         self.game_state = 'Start'
-        self.level = 'test_room'
+        self.level = 'test_lvl'
 
         # set the sprite group
         self.obstacle_sprites = pygame.sprite.Group()
+        self.visible_sprites = pygame.sprite.Group()
         self.collectable_sprites = pygame.sprite.Group()
         self.effect_sprites = pygame.sprite.Group()
         self.damageable_sprites = pygame.sprite.Group()
-        self.bouncePlatforms = pygame.sprite.Group()
+        self.bounce_platforms = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
 
         # setup level
@@ -29,10 +30,10 @@ class Level:
         self.background_surface = pygame.image.load(f'../levels/{self.level}/layout.png').convert_alpha()
 
     def setup_Enter(self):
-        Player_effect((64, 230), 'Enter', [self.effect_sprites], self.create_player)
+        Player_effect((64, 230), 'Enter', [self.effect_sprites, self.visible_sprites], self.create_player)
 
     def setup_layout(self):
-        BouncePlatform((128, 308), [self.bouncePlatforms])
+        BouncePlatform((128, 308), [self.bounce_platforms, self.visible_sprites])
         layouts = {
             'obstacle_block': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_StaticTiles.csv'),
             'CollectableFruit': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_CollectableFruits.csv'),
@@ -49,28 +50,28 @@ class Level:
                             Basic_Tile((x, y), [self.obstacle_sprites])
                         if style == 'CollectableFruit':
                             if cell == '0':
-                                CollectableFruit((x, y), [self.collectable_sprites], 'Apple')
+                                CollectableFruit((x, y), [self.collectable_sprites, self.visible_sprites], 'Apple')
                             elif cell == '1':
-                                CollectableFruit((x, y), [self.collectable_sprites], 'Cherry')
+                                CollectableFruit((x, y), [self.collectable_sprites, self.visible_sprites], 'Cherry')
                         if style == 'DamageableSprites':
                             if cell == '0':
                                 image = pygame.image.load('../graphics/Traps/spike.png')
-                                Basic_Tile((x, y+9), [self.damageable_sprites], image)
+                                Basic_Tile((x, y+9), [self.damageable_sprites, self.visible_sprites], image)
                             if cell == '1':
-                                Saw((x + 15, y), [self.damageable_sprites])
+                                Saw((x + 15, y), [self.damageable_sprites, self.visible_sprites])
 
     def create_player(self):
         Player((64, 230), [self.player], self.obstacle_sprites, self.create_dead_effect)
 
     def create_dead_effect(self):
         player = self.player.sprite
-        Player_effect(player.rect.center, 'Dead', [self.effect_sprites], self.create_player)
+        Player_effect(player.rect.center, 'Dead', [self.effect_sprites, self.visible_sprites], self.create_player)
 
     def check_collect(self):
         player = self.player.sprite
         for sprite in self.collectable_sprites.sprites():
             if sprite.hitbox.colliderect(player.hitbox):
-                Collect_effect(sprite.rect.topleft, [self.effect_sprites])
+                Collect_effect(sprite.rect.topleft, [self.effect_sprites, self.visible_sprites])
                 sprite.kill()
 
     def check_damage(self):
@@ -81,7 +82,7 @@ class Level:
 
     def check_bounce(self):
         player = self.player.sprite
-        for sprite in self.bouncePlatforms.sprites():
+        for sprite in self.bounce_platforms.sprites():
             if player.hitbox.colliderect(sprite.hitbox):
                 sprite.status = 'Hit'
                 player.direction.y = -4
@@ -104,26 +105,23 @@ class Level:
         debug('Level', self.level, self.display_surface)
         debug('game_state', self.game_state, self.display_surface, 20)
 
+        # UPDATE METHOD
         # Fruits
         self.collectable_sprites.update(dt)
-        self.collectable_sprites.draw(self.display_surface)
+        # Spike
+        self.damageable_sprites.update(dt)
+        # Effects
+        self.effect_sprites.update()
+        # BouncePlatforms
+        self.bounce_platforms.update(dt)
+
+        # DRAW METHOD
+        self.visible_sprites.draw(self.display_surface)
 
         # Player
         if self.game_state == 'Running':
             self.player.update(dt)
             self.player.draw(self.display_surface)
-
-        # BouncePlatform
-        self.bouncePlatforms.draw(self.display_surface)
-        self.bouncePlatforms.update(dt)
-
-        # Spike
-        self.damageable_sprites.update(dt)
-        self.damageable_sprites.draw(self.display_surface)
-
-        # Effects
-        self.effect_sprites.update()
-        self.effect_sprites.draw(self.display_surface)
 
         # Checks
         if self.game_state == 'Start':
@@ -132,5 +130,6 @@ class Level:
             self.check_collect()
             self.check_damage()
             self.check_bounce()
+            self.check_game_stage()
             player = self.player.sprite
             debug('player_status', player.status, self.display_surface, 30)

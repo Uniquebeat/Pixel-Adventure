@@ -104,6 +104,7 @@ class FallingPlatform(pygame.sprite.Sprite):
         self.animate(dt)
         self.check()
 
+
 class BouncePlatform(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
@@ -138,4 +139,3 @@ class BouncePlatform(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.animate(dt)
-
