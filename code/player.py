@@ -78,7 +78,7 @@ class Player(pygame.sprite.Sprite):
                 self.direction = pygame.math.Vector2(0, 0)
             else:
                 self.wall_jumped = False
-                if self.direction.y > 2:
+                if self.direction.y > 1:
                      self.status = 'Fall'
                 elif self.direction.y < 0 and self.double_jump == True:
                      self.status = 'Jump'

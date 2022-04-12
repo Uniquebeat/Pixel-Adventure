@@ -4,6 +4,7 @@ from support import import_csv_layout
 from tile import Basic_Tile, CollectableFruit, Saw, FallingPlatform, BouncePlatform
 from player import Player
 from effect import Collect_effect, Player_effect
+from background import Background
 from debug import debug
 
 
@@ -11,9 +12,10 @@ class Level:
     def __init__(self, surface):
         self.display_surface = surface
         self.game_state = 'Start'
-        self.level = 'test_lvl'
+        self.level = 'test_room'
 
         # set the sprite group
+        self.background_sprite = pygame.sprite.GroupSingle()
         self.obstacle_sprites = pygame.sprite.Group()
         self.visible_sprites = pygame.sprite.Group()
         self.collectable_sprites = pygame.sprite.Group()
@@ -33,6 +35,7 @@ class Level:
         Player_effect((64, 230), 'Enter', [self.effect_sprites, self.visible_sprites], self.create_player)
 
     def setup_layout(self):
+        Background([self.background_sprite])
         BouncePlatform((128, 308), [self.bounce_platforms, self.visible_sprites])
         layouts = {
             'obstacle_block': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_StaticTiles.csv'),
@@ -101,11 +104,14 @@ class Level:
     def run(self, dt):
 
         # Background
+        self.background_sprite.draw(self.display_surface)
         self.display_surface.blit(self.background_surface, (0, 0))
         debug('Level', self.level, self.display_surface)
         debug('game_state', self.game_state, self.display_surface, 20)
 
         # UPDATE METHOD
+        # Background
+        self.background_sprite.update(dt)
         # Fruits
         self.collectable_sprites.update(dt)
         # Spike
