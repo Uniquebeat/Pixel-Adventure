@@ -1,11 +1,16 @@
+from email.mime import image
 import pygame
+from random import choice
+from support import import_folder
 
 
 class Background(pygame.sprite.Sprite):
     def __init__(self, group):
         super().__init__(group)
-        surface1 = pygame.image.load('../graphics/test/background.png').convert_alpha()
-        surface2 = pygame.image.load('../graphics/test/background.png').convert_alpha()
+        images = import_folder('../graphics/Background')
+        image = choice(images)
+        surface1 = image
+        surface2 = image
         height = surface1.get_height()
         
         self.image = pygame.Surface((surface1.get_width(), surface1.get_height() * 2))
