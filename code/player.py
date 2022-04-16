@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = pygame.image.load('../graphics/player/Idle/a.png').convert_alpha()
         self.rect = self.image.get_rect(center=(pos[0]-3, pos[1]-7))
-        self.hitbox = self.rect.inflate(-15, -2)
+        self.hitbox = self.rect.inflate(-15, 0)
         self.tiles = tiles
         self.pressed = False
         self.alive = True

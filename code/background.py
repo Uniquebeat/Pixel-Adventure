@@ -21,7 +21,7 @@ class Background(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2(self.rect.topleft)
 
     def move(self, dt):
-        self.pos.y -= 20 * dt
+        self.pos.y -= 13 * dt
         if self.rect.centery <= 0:
             self.pos.y = 0
         self.rect.y = round(self.pos.y)

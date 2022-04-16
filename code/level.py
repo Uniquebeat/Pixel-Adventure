@@ -9,8 +9,8 @@ from debug import debug
 
 
 class Level:
-    def __init__(self, surface):
-        self.display_surface = surface
+    def __init__(self):
+        self.display_surface = pygame.display.get_surface()
         self.game_state = 'Start'
         self.level = 'test_room'
 

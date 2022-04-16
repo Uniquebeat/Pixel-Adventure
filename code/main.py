@@ -7,12 +7,12 @@ from debug import debug
 class Game:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((1280, 720))
+        self.screen = pygame.display.set_mode((scaled_width, scaled_height), pygame.SCALED | pygame.FULLSCREEN)
         pygame.display.set_caption('Pixel_Adventure_1')
         self.scaled_screen = pygame.Surface((scaled_width, scaled_height))
         self.clock = pygame.time.Clock()
         self.prev_time = time.time()
-        self.level = Level(self.scaled_screen)
+        self.level = Level()
 
     def run(self):
         while True:
@@ -27,12 +27,10 @@ class Game:
                        pygame.quit()
                        sys.exit()
 
-            self.scaled_screen.fill((33, 31, 48))
+            self.screen.fill((33, 31, 48))
             self.level.run(dt)
-            debug('FPS', int(self.clock.get_fps()), self.scaled_screen, 40)
+            debug('FPS', int(self.clock.get_fps()), self.screen, 40)
 
-            display_surf = pygame.transform.scale(self.scaled_screen, self.screen.get_size())
-            self.screen.blit(display_surf, (0, 0))
             pygame.display.update()
             self.clock.tick(fps)
 
