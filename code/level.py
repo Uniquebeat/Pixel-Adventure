@@ -22,6 +22,7 @@ class Level:
         self.effect_sprites = pygame.sprite.Group()
         self.damageable_sprites = pygame.sprite.Group()
         self.bounce_platforms = pygame.sprite.Group()
+        self.oneway_sprites = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
 
         # setup level
@@ -37,6 +38,9 @@ class Level:
     def setup_layout(self):
         Background([self.background_sprite])
         BouncePlatform((128, 308), [self.bounce_platforms, self.visible_sprites])
+        testsurface = pygame.Surface((16, 1))
+        Basic_Tile((200, 260), [self.oneway_sprites, self.visible_sprites], testsurface)
+        Basic_Tile((232, 260), [self.oneway_sprites, self.visible_sprites], testsurface)
         layouts = {
             'obstacle_block': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_StaticTiles.csv'),
             'CollectableFruit': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_CollectableFruits.csv'),
@@ -64,7 +68,7 @@ class Level:
                                 Saw((x + 15, y), [self.damageable_sprites, self.visible_sprites])
 
     def create_player(self):
-        Player((64, 230), [self.player], self.obstacle_sprites, self.create_dead_effect)
+        Player((64, 230), [self.player], self.obstacle_sprites, self.oneway_sprites, self.create_dead_effect)
 
     def create_dead_effect(self):
         player = self.player.sprite
@@ -88,7 +92,7 @@ class Level:
         for sprite in self.bounce_platforms.sprites():
             if player.hitbox.colliderect(sprite.hitbox):
                 sprite.status = 'Hit'
-                player.direction.y = -4
+                player.direction.y = -6
                 player.double_jump = True
 
     def check_game_stage(self):
@@ -98,7 +102,7 @@ class Level:
 
     def enter_timer(self):
         self.timer_index += self.timer_speed
-        if self.timer_index >= 14:
+        if self.timer_index >= 7:
             self.game_state = 'Running'
 
     def run(self, dt):
@@ -106,8 +110,8 @@ class Level:
         # Background
         self.background_sprite.draw(self.display_surface)
         self.display_surface.blit(self.background_surface, (0, 0))
-        debug('Level', self.level, self.display_surface)
-        debug('game_state', self.game_state, self.display_surface, 20)
+        debug('Level', self.level)
+        debug('game_state', self.game_state, 20)
 
         # UPDATE METHOD
         # Background
@@ -138,4 +142,4 @@ class Level:
             self.check_bounce()
             self.check_game_stage()
             player = self.player.sprite
-            debug('player_status', player.status, self.display_surface, 30)
+            debug('player_status', player.status, 30)

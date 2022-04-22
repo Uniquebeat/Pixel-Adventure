@@ -3,12 +3,13 @@ from support import import_folder
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, group, tiles, create_dead_effect):
+    def __init__(self, pos, group, tiles, oneway_tiles, create_dead_effect):
         super().__init__(group)
         self.image = pygame.image.load('../graphics/player/Idle/a.png').convert_alpha()
         self.rect = self.image.get_rect(center=(pos[0]-3, pos[1]-7))
         self.hitbox = self.rect.inflate(-15, 0)
         self.tiles = tiles
+        self.oneway_tiles = oneway_tiles
         self.pressed = False
         self.alive = True
 
@@ -16,8 +17,8 @@ class Player(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2(self.rect.center)
         self.direction = pygame.math.Vector2()
         self.speed = 110
-        self.gravity = 8
-        self.jumpforce = -3
+        self.gravity = 9
+        self.jumpforce = -4.3
         self.current_x = 0
         self.friction = 1
         self.on_ground = False
@@ -151,6 +152,18 @@ class Player(pygame.sprite.Sprite):
             if self.on_ground and self.direction.y < 0 or self.direction.y > 2:
                 self.on_ground = False
 
+    def oneway_collision_test(self):
+        for sprite in self.oneway_tiles:
+            diff = self.hitbox.y - sprite.hitbox.y
+            if abs(diff) >= 20:
+                if sprite.hitbox.colliderect(self.hitbox):
+                    if self.direction.y > 0:
+                        self.hitbox.bottom = sprite.hitbox.top
+                        self.direction.y = 0
+                        self.pos.y = self.hitbox.y
+                        self.on_ground = True
+                        self.double_jump = True
+
     def move(self, dt):
         if self.status != 'Hurt':
             self.pos.x += self.direction.x * self.speed * dt
@@ -158,6 +171,7 @@ class Player(pygame.sprite.Sprite):
             self.static_collision('horizontal')
             self.apply_gravity(dt)
             self.static_collision('vertical')
+            self.oneway_collision_test()
         self.rect.center = self.hitbox.center
 
     def apply_gravity(self, dt):

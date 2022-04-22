@@ -9,7 +9,6 @@ class Game:
         pygame.init()
         self.screen = pygame.display.set_mode((scaled_width, scaled_height), pygame.SCALED | pygame.FULLSCREEN)
         pygame.display.set_caption('Pixel_Adventure_1')
-        self.scaled_screen = pygame.Surface((scaled_width, scaled_height))
         self.clock = pygame.time.Clock()
         self.prev_time = time.time()
         self.level = Level()
@@ -29,7 +28,7 @@ class Game:
 
             self.screen.fill((33, 31, 48))
             self.level.run(dt)
-            debug('FPS', int(self.clock.get_fps()), self.screen, 40)
+            debug('FPS', int(self.clock.get_fps()), 40)
 
             pygame.display.update()
             self.clock.tick(fps)

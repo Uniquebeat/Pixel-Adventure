@@ -1,4 +1,5 @@
 import pygame
+from debug import debug
 from support import import_folder
 
 
@@ -11,7 +12,7 @@ class Collect_effect(pygame.sprite.Sprite):
 		# Animations
 		self.import_assets()
 		self.frame_index = 0
-		self.animation_speed = 0.14
+		self.animation_speed = 0.28
 
 	def import_assets(self):
 		full_path = '../graphics/fruits/Collected'
@@ -24,7 +25,7 @@ class Collect_effect(pygame.sprite.Sprite):
 		else:
 			self.image = self.frame[int(self.frame_index)]
 
-	def update(self):
+	def update(self, ):
 		self.animate()
 
 class Player_effect(pygame.sprite.Sprite):
@@ -37,7 +38,7 @@ class Player_effect(pygame.sprite.Sprite):
 
 		# Animations
 		self.frame_index = 0
-		self.animation_speed = 0.14
+		self.animation_speed = 0.28
 		if self.type == 'Enter':
 			self.frames = import_folder('../graphics/player/Enter_effect')
 		elif self.type == 'Dead':
@@ -55,3 +56,4 @@ class Player_effect(pygame.sprite.Sprite):
 
 	def update(self):
 		self.animate()
+
