@@ -12,7 +12,7 @@ class Level:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
         self.game_state = 'Start'
-        self.level = 'test_room'
+        self.level = 'test_lvl'
 
         # set the sprite group
         self.background_sprite = pygame.sprite.GroupSingle()
@@ -27,7 +27,7 @@ class Level:
 
         # setup level
         self.timer_index = 0
-        self.timer_speed = 0.28
+        self.timer_speed = 0.14
         self.setup_Enter()
         self.setup_layout()
         self.background_surface = pygame.image.load(f'../levels/{self.level}/layout.png').convert_alpha()
@@ -37,10 +37,10 @@ class Level:
 
     def setup_layout(self):
         Background([self.background_sprite])
-        BouncePlatform((128, 308), [self.bounce_platforms, self.visible_sprites])
-        testsurface = pygame.Surface((16, 1))
-        Basic_Tile((200, 260), [self.oneway_sprites, self.visible_sprites], testsurface)
-        Basic_Tile((232, 260), [self.oneway_sprites, self.visible_sprites], testsurface)
+        #BouncePlatform((128, 308), [self.bounce_platforms, self.visible_sprites])
+        #testsurface = pygame.Surface((16, 1))
+        #Basic_Tile((200, 260), [self.oneway_sprites, self.visible_sprites], testsurface)
+        #Basic_Tile((232, 260), [self.oneway_sprites, self.visible_sprites], testsurface)
         layouts = {
             'obstacle_block': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_StaticTiles.csv'),
             'CollectableFruit': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_CollectableFruits.csv'),
@@ -92,7 +92,7 @@ class Level:
         for sprite in self.bounce_platforms.sprites():
             if player.hitbox.colliderect(sprite.hitbox):
                 sprite.status = 'Hit'
-                player.direction.y = -6
+                player.direction.y = -3.5
                 player.double_jump = True
 
     def check_game_stage(self):
