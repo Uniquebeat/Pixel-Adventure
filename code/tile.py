@@ -9,7 +9,13 @@ class Basic_Tile(pygame.sprite.Sprite):
         self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect
-        self.old_hitbox = self.hitbox.copy()
+
+class OneWay_Tile(pygame.sprite.Sprite):
+    def __init__(self, pos, group, surface=pygame.Surface((16, 1))):
+        super().__init__(group)
+        self.image = surface
+        self.rect = self.image.get_rect(topleft=pos)
+        self.hitbox = self.rect
 
 class CollectableFruit(pygame.sprite.Sprite):
     def __init__(self, pos, group, type):

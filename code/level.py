@@ -1,7 +1,7 @@
 import pygame
 from setting import *
 from support import import_csv_layout
-from tile import Basic_Tile, CollectableFruit, Saw, FallingPlatform, BouncePlatform
+from tile import Basic_Tile, CollectableFruit, Saw, FallingPlatform, BouncePlatform, OneWay_Tile
 from player import Player
 from effect import Collect_effect, Player_effect
 from background import Background
@@ -12,7 +12,8 @@ class Level:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
         self.game_state = 'Start'
-        self.level = 'test_lvl'
+        self.level = 'test_room'
+        self.visible = False
 
         # set the sprite group
         self.background_sprite = pygame.sprite.GroupSingle()
@@ -24,6 +25,7 @@ class Level:
         self.bounce_platforms = pygame.sprite.Group()
         self.oneway_sprites = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
+        self.hitbox_sprites = pygame.sprite.Group()
 
         # setup level
         self.timer_index = 0
@@ -32,15 +34,18 @@ class Level:
         self.setup_layout()
         self.background_surface = pygame.image.load(f'../levels/{self.level}/layout.png').convert_alpha()
 
+    def get_hitbox_visible(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_v]:
+            for sprite in self.hitbox_sprites:
+                pygame.draw.rect(self.display_surface, 'red', sprite.hitbox, 1)
+
     def setup_Enter(self):
         Player_effect((64, 230), 'Enter', [self.effect_sprites, self.visible_sprites], self.create_player)
 
     def setup_layout(self):
         Background([self.background_sprite])
-        #BouncePlatform((128, 308), [self.bounce_platforms, self.visible_sprites])
-        #testsurface = pygame.Surface((16, 1))
-        #Basic_Tile((200, 260), [self.oneway_sprites, self.visible_sprites], testsurface)
-        #Basic_Tile((232, 260), [self.oneway_sprites, self.visible_sprites], testsurface)
         layouts = {
             'obstacle_block': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_StaticTiles.csv'),
             'CollectableFruit': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_CollectableFruits.csv'),
@@ -54,7 +59,7 @@ class Level:
                         x = col_index * tile_size
                         y = row_index * tile_size
                         if style == 'obstacle_block':
-                            Basic_Tile((x, y), [self.obstacle_sprites])
+                            Basic_Tile((x, y), [self.obstacle_sprites, self.hitbox_sprites])
                         if style == 'CollectableFruit':
                             if cell == '0':
                                 CollectableFruit((x, y), [self.collectable_sprites, self.visible_sprites], 'Apple')
@@ -68,7 +73,7 @@ class Level:
                                 Saw((x + 15, y), [self.damageable_sprites, self.visible_sprites])
 
     def create_player(self):
-        Player((64, 230), [self.player], self.obstacle_sprites, self.oneway_sprites, self.create_dead_effect)
+        Player((64, 230), [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.create_dead_effect)
 
     def create_dead_effect(self):
         player = self.player.sprite
@@ -143,3 +148,5 @@ class Level:
             self.check_game_stage()
             player = self.player.sprite
             debug('player_status', player.status, 30)
+
+        self.get_hitbox_visible()

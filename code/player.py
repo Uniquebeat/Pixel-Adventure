@@ -149,7 +149,7 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox.top = tile.rect.bottom
                         self.pos.y = self.hitbox.y
                         self.direction.y = 0
-            if self.on_ground and self.direction.y < 0 or self.direction.y > 2:
+            if self.on_ground and self.direction.y < 0 or self.direction.y > 0.6:
                 self.on_ground = False
 
     def oneway_collision_test(self):
@@ -176,8 +176,8 @@ class Player(pygame.sprite.Sprite):
 
     def apply_gravity(self, dt):
         self.direction.y += self.gravity * dt
-        if self.direction.y >= 10:
-            self.direction.y = 10
+        if self.direction.y >= 8:
+            self.direction.y = 8
         self.pos.y += self.direction.y
         self.hitbox.y = round(self.pos.y)
 
