@@ -1,4 +1,5 @@
 import pygame
+from pytmx.util_pygame import load_pygame
 from setting import *
 from support import import_csv_layout
 from tile import Basic_Tile, CollectableFruit, Saw, FallingPlatform, BouncePlatform, OneWay_Tile
@@ -12,7 +13,7 @@ class Level:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
         self.game_state = 'Start'
-        self.level = 'test_room'
+        self.level_data = load_pygame('../levels/0.tmx')
         self.visible = False
 
         # set the sprite group
@@ -32,7 +33,6 @@ class Level:
         self.timer_speed = 0.14
         self.setup_Enter()
         self.setup_layout()
-        self.background_surface = pygame.image.load(f'../levels/{self.level}/layout.png').convert_alpha()
 
     def get_hitbox_visible(self):
         keys = pygame.key.get_pressed()
@@ -46,32 +46,15 @@ class Level:
 
     def setup_layout(self):
         Background([self.background_sprite])
-        layouts = {
-            'obstacle_block': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_StaticTiles.csv'),
-            'CollectableFruit': import_csv_layout(f'../levels/{self.level}/csv/{self.level}_CollectableFruits.csv'),
-            'DamageableSprites' : import_csv_layout(f'../levels/{self.level}/csv/{self.level}_DamageableSprites.csv'),
-        }
-
-        for style, layout in layouts.items():
-            for row_index, row in enumerate(layout):
-                for col_index, cell in enumerate(row):
-                    if cell != '-1':
-                        x = col_index * tile_size
-                        y = row_index * tile_size
-                        if style == 'obstacle_block':
-                            Basic_Tile((x, y), [self.obstacle_sprites, self.hitbox_sprites])
-                        if style == 'CollectableFruit':
-                            if cell == '0':
-                                CollectableFruit((x, y), [self.collectable_sprites, self.visible_sprites], 'Apple')
-                            elif cell == '1':
-                                CollectableFruit((x, y), [self.collectable_sprites, self.visible_sprites], 'Cherry')
-                        if style == 'DamageableSprites':
-                            if cell == '0':
-                                image = pygame.image.load('../graphics/Traps/spike.png')
-                                Basic_Tile((x, y+9), [self.damageable_sprites, self.visible_sprites], image)
-                            if cell == '1':
-                                Saw((x + 15, y), [self.damageable_sprites, self.visible_sprites])
-
+        for layer in self.level_data.visible_layers:
+            if hasattr(layer, 'data'):
+                for x, y, surface in layer.tiles():
+                    pos = (x*16, y*16)
+                    if layer.name in ('StaticTiles'):
+                        Basic_Tile(pos, [self.visible_sprites, self.obstacle_sprites], surface)
+                    if layer.name in ('OnewayTiles'):
+                        OneWay_Tile(pos, [self.visible_sprites, self.oneway_sprites], surface)
+        
     def create_player(self):
         Player((64, 230), [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.create_dead_effect)
 
@@ -114,9 +97,6 @@ class Level:
 
         # Background
         self.background_sprite.draw(self.display_surface)
-        self.display_surface.blit(self.background_surface, (0, 0))
-        debug('Level', self.level)
-        debug('game_state', self.game_state, 20)
 
         # UPDATE METHOD
         # Background
@@ -150,3 +130,5 @@ class Level:
             debug('player_status', player.status, 30)
 
         self.get_hitbox_visible()
+        debug('Level', self.level_data)
+        debug('game_state', self.game_state, 20)
