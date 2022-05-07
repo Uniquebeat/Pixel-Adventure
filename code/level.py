@@ -51,9 +51,9 @@ class Level:
                 for x, y, surface in layer.tiles():
                     pos = (x*16, y*16)
                     if layer.name in ('StaticTiles'):
-                        Basic_Tile(pos, [self.visible_sprites, self.obstacle_sprites], surface)
+                        Basic_Tile(pos, [self.visible_sprites, self.obstacle_sprites, self.hitbox_sprites], surface)
                     if layer.name in ('OnewayTiles'):
-                        OneWay_Tile(pos, [self.visible_sprites, self.oneway_sprites], surface)
+                        OneWay_Tile(pos, [self.visible_sprites, self.oneway_sprites, self.hitbox_sprites], surface)
         
     def create_player(self):
         Player((64, 230), [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.create_dead_effect)
@@ -119,6 +119,7 @@ class Level:
             self.player.draw(self.display_surface)
 
         # Checks
+        self.get_hitbox_visible()
         if self.game_state == 'Start':
             self.enter_timer()
         elif self.game_state == 'Running':
@@ -127,8 +128,7 @@ class Level:
             self.check_bounce()
             self.check_game_stage()
             player = self.player.sprite
-            debug('player_status', player.status, 30)
+            debug('player_status', player.status, 26)
 
-        self.get_hitbox_visible()
         debug('Level', self.level_data)
-        debug('game_state', self.game_state, 20)
+        debug('game_state', self.game_state, 18)

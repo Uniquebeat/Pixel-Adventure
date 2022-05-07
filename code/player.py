@@ -72,7 +72,7 @@ class Player(pygame.sprite.Sprite):
                 self.double_jump = True
                 if not self.jumping:
                     self.status = 'On_wall'
-                    self.direction.y = 0.2
+                    self.direction.y = 0.14
                 if self.jumping:
                     self.status = 'Jump'
             elif self.status == 'Hurt':
@@ -176,8 +176,8 @@ class Player(pygame.sprite.Sprite):
 
     def apply_gravity(self, dt):
         self.direction.y += self.gravity * dt
-        if self.direction.y >= 8:
-            self.direction.y = 8
+        if self.direction.y >= 7:
+            self.direction.y = 7
         self.pos.y += self.direction.y
         self.hitbox.y = round(self.pos.y)
 
