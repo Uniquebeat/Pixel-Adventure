@@ -8,10 +8,10 @@ class Basic_Tile(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect
+        self.hitbox = self.rect.inflate(-3, 0)
 
 class OneWay_Tile(pygame.sprite.Sprite):
-    def __init__(self, pos, group, surface=pygame.Surface((16, 1))):
+    def __init__(self, pos, group, surface):
         super().__init__(group)
         self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
