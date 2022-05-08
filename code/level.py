@@ -54,6 +54,8 @@ class Level:
                         Basic_Tile(pos, [self.visible_sprites, self.obstacle_sprites, self.hitbox_sprites], surface)
                     if layer.name in ('OnewayTiles'):
                         OneWay_Tile(pos, [self.visible_sprites, self.oneway_sprites, self.hitbox_sprites], surface)
+                    if layer.name in ('SpikeTiles'):
+                        Basic_Tile((pos[0], pos[1]+9), [self.visible_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
         
     def create_player(self):
         Player((64, 230), [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.create_dead_effect)
