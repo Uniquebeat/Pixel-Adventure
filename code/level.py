@@ -10,10 +10,10 @@ from debug import debug
 
 
 class Level:
-    def __init__(self):
+    def __init__(self, content):
         self.display_surface = pygame.display.get_surface()
         self.game_state = 'Start'
-        self.level_data = load_pygame('../levels/0.tmx')
+        self.level_data = load_pygame(content)
         self.visible = False
 
         # set the sprite group
