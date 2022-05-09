@@ -11,15 +11,16 @@ class Game:
         self.screen = pygame.display.set_mode((scaled_width, scaled_height), pygame.SCALED | pygame.FULLSCREEN)
         pygame.display.set_caption('Pixel_Adventure_1')
         self.clock = pygame.time.Clock()
-        self.overworld = Overworld(self.create_level)
+        self.overworld = Overworld((144, 32), self.create_level)
         self.status = 'Overworld'
 
-    def create_level(self, content):
-        self.level = Level(content)
+    def create_level(self, content, pos):
+        self.level = Level(content, pos, self.create_overworld)
         self.status = 'Level'
 
-    def create_overworld(self):
-        self.overworld = Overworld(self.create_level)
+    def create_overworld(self, pos):
+        self.overworld = Overworld(pos, self.create_level)
+        self.status = 'Overworld'
 
     def run(self):
         prev_time = time.time()

@@ -10,8 +10,10 @@ from debug import debug
 
 
 class Level:
-    def __init__(self, content):
+    def __init__(self, content, pos, create_overworld):
         self.display_surface = pygame.display.get_surface()
+        self.create_overworld = create_overworld
+        self.pos = pos
         self.game_state = 'Start'
         self.level_data = load_pygame(content)
         self.visible = False
@@ -40,6 +42,8 @@ class Level:
         if keys[pygame.K_v]:
             for sprite in self.hitbox_sprites:
                 pygame.draw.rect(self.display_surface, 'red', sprite.hitbox, 1)
+        elif keys[pygame.K_BACKSPACE]:
+            self.create_overworld(self.pos)
 
     def setup_Enter(self):
         Player_effect((64, 230), 'Enter', [self.effect_sprites, self.visible_sprites], self.create_player)

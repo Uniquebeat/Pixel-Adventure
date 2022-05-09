@@ -10,6 +10,7 @@ class Node(pygame.sprite.Sprite):
         self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
         self.content = content
+        self.pos = pos
 
 
 class Select(pygame.sprite.Sprite):
@@ -61,8 +62,9 @@ class Select(pygame.sprite.Sprite):
 
 
 class Overworld:
-    def __init__(self, create_level):
+    def __init__(self, pos, create_level):
         self.display_surface = pygame.display.get_surface()
+        self.pos = pos
         self.create_level = create_level
         self.background_sprite = pygame.sprite.GroupSingle()
         self.node_sprites = pygame.sprite.Group()
@@ -71,7 +73,7 @@ class Overworld:
 
     def setup(self):
         Background([self.background_sprite])
-        Select((144, 32), [self.select_sprite])
+        Select((self.pos), [self.select_sprite])
         graphics = import_folder('../graphics/Overworld/levels')
         for node_data in levels.values():
             surface = graphics[node_data['number']]
@@ -82,7 +84,7 @@ class Overworld:
         select = self.select_sprite.sprite
         for node in self.node_sprites.sprites():
             if keys[pygame.K_SPACE] and node.rect.colliderect(select.rect):
-                self.create_level(node.content)
+                self.create_level(node.content, node.pos)
 
     def run(self, dt):
         self.input()
