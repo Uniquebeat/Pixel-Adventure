@@ -21,8 +21,8 @@ class CollectableFruit(pygame.sprite.Sprite):
     def __init__(self, pos, group, type):
         super().__init__(group)
         self.image = pygame.image.load('../graphics/fruits/'+type+'/a.png').convert_alpha()
-        self.rect = self.image.get_rect(topleft=(pos[0], pos[1]-16))
-        self.hitbox = self.rect.inflate(-9, -9)
+        self.rect = self.image.get_rect(topleft=(pos[0], pos[1]))
+        self.hitbox = self.rect.inflate(-11, -11)
         self.type = type
 
         # animation
