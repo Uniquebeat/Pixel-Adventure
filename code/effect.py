@@ -25,7 +25,7 @@ class Collect_effect(pygame.sprite.Sprite):
 		else:
 			self.image = self.frame[int(self.frame_index)]
 
-	def update(self, ):
+	def update(self):
 		self.animate()
 
 class Player_effect(pygame.sprite.Sprite):

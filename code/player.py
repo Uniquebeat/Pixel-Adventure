@@ -38,6 +38,10 @@ class Player(pygame.sprite.Sprite):
         # Effect
         self.create_dead_effect = create_dead_effect
 
+        # Audio
+        self.jump_sound = pygame.mixer.Sound('../audio/jump.wav')
+
+
     def import_character_assets(self):
         self.animations = {
                 'Idle': [], 'Run': [], 'Jump': [], 'Fall': [], 'On_wall': [], 'DoubleJump': [], 'Hurt':[]
@@ -106,13 +110,16 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE]:
             if self.on_ground:
                     self.jump()
+                    self.jump_sound.play()
             if not self.pressed:
                 self.jumping = True
                 self.pressed = True
                 if (self.on_right or self.on_left) and self.wall_jumped == False:
                     self.wall_jump()
+                    self.jump_sound.play()
                 elif not self.on_ground and self.double_jump:
                     self.jump()
+                    self.jump_sound.play()
                     self.double_jump = False
         elif self.pressed:
             self.pressed = False

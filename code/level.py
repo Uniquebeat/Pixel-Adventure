@@ -17,6 +17,7 @@ class Level:
         self.game_state = 'Start'
         self.level_data = load_pygame(content)
         self.visible = False
+        self.sounded = False
 
         # set the sprite group
         self.background_sprite = pygame.sprite.GroupSingle()
@@ -29,12 +30,19 @@ class Level:
         self.oneway_sprites = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.hitbox_sprites = pygame.sprite.Group()
+        
+        # audio
+        self.enter_sound = pygame.mixer.Sound('../audio/enter.wav')
+        self.collect_sound = pygame.mixer.Sound('../audio/collect.wav')
+        self.hurt_sound = pygame.mixer.Sound('../audio/hurt.wav')
+        self.dead_sound = pygame.mixer.Sound('../audio/dead.wav')
 
         # setup level
         self.timer_index = 0
         self.timer_speed = 0.14
-        self.setup_Enter()
         self.setup_layout()
+        self.setup_Enter()
+
 
     def get_hitbox_visible(self):
         keys = pygame.key.get_pressed()
@@ -46,6 +54,7 @@ class Level:
             self.create_overworld(self.pos)
 
     def setup_Enter(self):
+        self.enter_sound.play()
         Player_effect((64, 230), 'Enter', [self.effect_sprites, self.visible_sprites], self.create_player)
 
     def setup_layout(self):
@@ -70,12 +79,14 @@ class Level:
 
     def create_dead_effect(self):
         player = self.player.sprite
+        self.dead_sound.play()
         Player_effect(player.rect.center, 'Dead', [self.effect_sprites, self.visible_sprites], self.create_player)
 
     def check_collect(self):
         player = self.player.sprite
         for sprite in self.collectable_sprites.sprites():
             if sprite.hitbox.colliderect(player.hitbox):
+                self.collect_sound.play()
                 Collect_effect(sprite.rect.topleft, [self.effect_sprites, self.visible_sprites])
                 sprite.kill()
 
