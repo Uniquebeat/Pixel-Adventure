@@ -1,7 +1,7 @@
 import pygame
-from background import Background
-from support import import_folder
-from game_data import levels
+from src.background import Background
+from src.support import import_folder
+from src.game_data import levels
 
 
 class Node(pygame.sprite.Sprite):
@@ -16,7 +16,7 @@ class Node(pygame.sprite.Sprite):
 class Select(pygame.sprite.Sprite):
     def __init__(self, pos, groups):
         super().__init__(groups)
-        self.image = pygame.image.load('../graphics/Overworld/select.png').convert_alpha()
+        self.image = pygame.image.load('graphics/Overworld/select.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.pressed = False
 
@@ -74,7 +74,7 @@ class Overworld:
     def setup(self):
         Background([self.background_sprite])
         Select((self.pos), [self.select_sprite])
-        graphics = import_folder('../graphics/Overworld/levels')
+        graphics = import_folder('graphics/Overworld/levels')
         for node_data in levels.values():
             surface = graphics[node_data['number']]
             Node(node_data['pos'], node_data['content'], [self.node_sprites], surface)

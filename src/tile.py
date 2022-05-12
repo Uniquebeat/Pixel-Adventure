@@ -1,6 +1,6 @@
 import pygame
-from setting import tile_size
-from support import import_folder
+from src.setting import tile_size
+from src.support import import_folder
 
 
 class Basic_Tile(pygame.sprite.Sprite):
@@ -20,7 +20,7 @@ class OneWay_Tile(pygame.sprite.Sprite):
 class CollectableFruit(pygame.sprite.Sprite):
     def __init__(self, pos, group, type):
         super().__init__(group)
-        self.image = pygame.image.load('../graphics/fruits/'+type+'/a.png').convert_alpha()
+        self.image = pygame.image.load('graphics/fruits/'+type+'/a.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=(pos[0], pos[1]))
         self.hitbox = self.rect.inflate(-11, -11)
         self.type = type
@@ -34,7 +34,7 @@ class CollectableFruit(pygame.sprite.Sprite):
         self.animations = {
                 'Apple' : [], 'Cherry': []
         }
-        path = '../graphics/fruits/'
+        path = 'graphics/fruits/'
         for animation in self.animations.keys():
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
@@ -52,12 +52,12 @@ class CollectableFruit(pygame.sprite.Sprite):
 class Saw(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
-        self.image = pygame.image.load('../graphics/Traps/Saw/0.png').convert_alpha()
+        self.image = pygame.image.load('graphics/Traps/Saw/0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=(pos[0]-19, pos[1]-19))
         self.hitbox = self.rect.inflate(-1, -1)
 
         # animation
-        self.frames = import_folder('../graphics/Traps/Saw')
+        self.frames = import_folder('graphics/Traps/Saw')
         self.frame_index = 0
         self.animation_speed = 18
 
@@ -73,7 +73,7 @@ class Saw(pygame.sprite.Sprite):
 class FallingPlatform(pygame.sprite.Sprite):
     def __init__(self, pos, group, player):
         super().__init__(group)
-        self.image = pygame.image.load('../graphics/Traps/FallingPlatform/Off/0.png').convert_alpha()
+        self.image = pygame.image.load('graphics/Traps/FallingPlatform/Off/0.png').convert_alpha()
         self.player = player
         self.rect = self.image.get_rect(topleft=pos)
         self.grounded = False
@@ -88,7 +88,7 @@ class FallingPlatform(pygame.sprite.Sprite):
         self.animations = {
                 'On' : [], 'Off': []
         }
-        path = '../graphics/Traps/FallingPlatform/'
+        path = 'graphics/Traps/FallingPlatform/'
         for animation in self.animations.keys():
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
@@ -115,7 +115,7 @@ class FallingPlatform(pygame.sprite.Sprite):
 class BouncePlatform(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
-        self.image = pygame.image.load('../graphics/Traps/BouncePlatform/Idle/0.png').convert_alpha()
+        self.image = pygame.image.load('graphics/Traps/BouncePlatform/Idle/0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(-2, -18)
 
@@ -129,7 +129,7 @@ class BouncePlatform(pygame.sprite.Sprite):
         self.animations = {
                 'Idle' : [], 'Hit' : []
                 }
-        path = '../graphics/Traps/BouncePlatform'
+        path = 'graphics/Traps/BouncePlatform'
         for animation in self.animations.keys():
             fullpath = path + '/' + animation
             self.animations[animation] = import_folder(fullpath)

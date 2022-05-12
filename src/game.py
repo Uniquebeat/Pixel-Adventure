@@ -1,8 +1,8 @@
 import pygame, sys, time
-from setting import *
-from level import Level
-from overworld import Overworld
-from debug import debug
+from src.setting import *
+from src.level import Level
+from src.overworld import Overworld
+from src.debug import debug
 
 
 class Game:
@@ -46,8 +46,3 @@ class Game:
 
             pygame.display.update()
             self.clock.tick(fps)
-
-
-if __name__ == '__main__':
-    game = Game()
-    game.run()

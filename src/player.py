@@ -1,11 +1,11 @@
 import pygame
-from support import import_folder
+from src.support import import_folder
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, group, tiles, oneway_tiles, create_dead_effect):
         super().__init__(group)
-        self.image = pygame.image.load('../graphics/player/Idle/a.png').convert_alpha()
+        self.image = pygame.image.load('graphics/player/Idle/a.png').convert_alpha()
         self.rect = self.image.get_rect(center=(pos[0]-3, pos[1]-7))
         self.hitbox = self.rect.inflate(-15, 0)
         self.tiles = tiles
@@ -39,14 +39,14 @@ class Player(pygame.sprite.Sprite):
         self.create_dead_effect = create_dead_effect
 
         # Audio
-        self.jump_sound = pygame.mixer.Sound('../audio/jump.wav')
+        self.jump_sound = pygame.mixer.Sound('audio/jump.wav')
 
 
     def import_character_assets(self):
         self.animations = {
                 'Idle': [], 'Run': [], 'Jump': [], 'Fall': [], 'On_wall': [], 'DoubleJump': [], 'Hurt':[]
         }
-        character_path = '../graphics/player/'
+        character_path = 'graphics/player/'
         for animation in self.animations.keys():
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)

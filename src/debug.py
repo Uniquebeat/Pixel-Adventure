@@ -2,7 +2,7 @@ import pygame
 
 pygame.init()
 
-font = pygame.font.Font('../graphics/font/slkscr.ttf', 9)
+font = pygame.font.Font('graphics/font/slkscr.ttf', 9)
 
 def debug(Text, info, y = 10, x = 0):
     text = str(Text)

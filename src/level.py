@@ -1,12 +1,12 @@
 import pygame
 from pytmx.util_pygame import load_pygame
-from setting import *
-from support import import_csv_layout
-from tile import Basic_Tile, CollectableFruit, Saw, FallingPlatform, BouncePlatform, OneWay_Tile
-from player import Player
-from effect import Collect_effect, Player_effect
-from background import Background
-from debug import debug
+from src.setting import *
+from src.support import import_csv_layout
+from src.tile import Basic_Tile, CollectableFruit, Saw, FallingPlatform, BouncePlatform, OneWay_Tile
+from src.player import Player
+from src.effect import Collect_effect, Player_effect
+from src.background import Background
+from src.debug import debug
 
 
 class Level:
@@ -32,10 +32,10 @@ class Level:
         self.hitbox_sprites = pygame.sprite.Group()
         
         # audio
-        self.enter_sound = pygame.mixer.Sound('../audio/enter.wav')
-        self.collect_sound = pygame.mixer.Sound('../audio/collect.wav')
-        self.hurt_sound = pygame.mixer.Sound('../audio/hurt.wav')
-        self.dead_sound = pygame.mixer.Sound('../audio/dead.wav')
+        self.enter_sound = pygame.mixer.Sound('audio/enter.wav')
+        self.collect_sound = pygame.mixer.Sound('audio/collect.wav')
+        self.hurt_sound = pygame.mixer.Sound('audio/hurt.wav')
+        self.dead_sound = pygame.mixer.Sound('audio/dead.wav')
 
         # setup level
         self.timer_index = 0
@@ -88,6 +88,7 @@ class Level:
             if sprite.hitbox.colliderect(player.hitbox):
                 self.collect_sound.play()
                 Collect_effect(sprite.rect.topleft, [self.effect_sprites, self.visible_sprites])
+                sprite.remove()
                 sprite.kill()
 
     def check_damage(self):
@@ -113,6 +114,11 @@ class Level:
         self.timer_index += self.timer_speed
         if self.timer_index >= 7:
             self.game_state = 'Running'
+
+    def test_check(self):
+        for sprite in self.collectable_sprites:
+            if self.collectable_sprites.has(sprite) == False:
+                print("true")
 
     def run(self, dt):
 
@@ -145,6 +151,7 @@ class Level:
             self.enter_timer()
         elif self.game_state == 'Running':
             self.check_collect()
+            self.test_check()
             self.check_damage()
             self.check_bounce()
             self.check_game_stage()

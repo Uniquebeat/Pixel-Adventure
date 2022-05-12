@@ -1,12 +1,12 @@
 import pygame
-from debug import debug
-from support import import_folder
+from src.debug import debug
+from src.support import import_folder
 
 
 class Collect_effect(pygame.sprite.Sprite):
 	def __init__(self, pos, group):
 		super().__init__(group)
-		self.image = pygame.image.load('../graphics/fruits/Collected/0.png').convert_alpha()
+		self.image = pygame.image.load('graphics/fruits/Collected/0.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft=pos)
 
 		# Animations
@@ -15,7 +15,7 @@ class Collect_effect(pygame.sprite.Sprite):
 		self.animation_speed = 0.14
 
 	def import_assets(self):
-		full_path = '../graphics/fruits/Collected'
+		full_path = 'graphics/fruits/Collected'
 		self.frame = import_folder(full_path)
 
 	def animate(self):
@@ -31,7 +31,7 @@ class Collect_effect(pygame.sprite.Sprite):
 class Player_effect(pygame.sprite.Sprite):
 	def __init__(self, pos, type, group, create_player):
 		super().__init__(group)
-		self.image = pygame.image.load('../graphics/player/Enter_effect/0.png').convert_alpha()
+		self.image = pygame.image.load('graphics/player/Enter_effect/0.png').convert_alpha()
 		self.rect = self.image.get_rect(center=pos)
 		self.type = type
 		self.create_player = create_player
@@ -40,9 +40,9 @@ class Player_effect(pygame.sprite.Sprite):
 		self.frame_index = 0
 		self.animation_speed = 0.14
 		if self.type == 'Enter':
-			self.frames = import_folder('../graphics/player/Enter_effect')
+			self.frames = import_folder('graphics/player/Enter_effect')
 		elif self.type == 'Dead':
-			self.frames = import_folder('../graphics/player/Dead_effect')
+			self.frames = import_folder('graphics/player/Dead_effect')
 
 	def animate(self):
 		self.frame_index += self.animation_speed
