@@ -17,11 +17,14 @@ class Game:
         self.status = 'Overworld'
 
     def create_level(self, node):
-        self.level = Level(node.content, node.pos, node.next_lvl, self.create_overworld, self.create_next_level)
+        self.level = Level(node.content, node.pos, node.next_lvl, self.create_overworld, self.recreate_level, self.create_next_level)
         self.status = 'Level'
 
+    def recreate_level(self, pos, content, next_lvl):
+        self.level = Level(content, pos, next_lvl, self.create_overworld, self.recreate_level, self.create_next_level)
+
     def create_next_level(self, pos, content, next_lvl):
-        self.level = Level(content, pos, next_lvl, self.create_overworld, self.create_next_level)
+        self.level = Level(content, pos, next_lvl, self.create_overworld, self.recreate_level, self.create_next_level)
 
     def create_overworld(self, pos):
         self.overworld = Overworld(pos, self.create_level)

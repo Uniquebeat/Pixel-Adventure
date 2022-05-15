@@ -8,18 +8,19 @@ from src.effect import Collect_effect, Player_effect
 from src.background import Background
 from src.debug import debug
 from src.game_data import *
-from src.overworld import Node
 
 
 class Level:
-    def __init__(self, content, pos, next_lvl, create_overworld, create_next_level):
+    def __init__(self, content, pos, next_lvl, create_overworld, recreate_level, create_next_level):
         self.display_surface = pygame.display.get_surface()
         self.create_overworld = create_overworld
+        self.recreate_level = recreate_level
         self.create_next_level = create_next_level
         self.pos = pos
         self.next_lvl = next_lvl
         self.game_state = 'Start'
-        self.level_data = load_pygame(content)
+        self.content = content
+        self.level_data = load_pygame(self.content)
         self.visible = False
         self.sounded = False
 
@@ -112,7 +113,7 @@ class Level:
     def check_game_stage(self):
         player = self.player.sprite
         if player.alive == False:
-            self.game_state = 'End'
+            self.game_state = 'Dead'
         sprites = self.collectable_sprites.sprites()
         if len(sprites) == 0:
             self.game_state = 'Won'
@@ -121,6 +122,11 @@ class Level:
         self.timer_index += self.timer_speed
         if self.timer_index >= 7:
             self.game_state = 'Running'
+
+    def dead_timer(self):
+        self.timer_index += self.timer_speed
+        if self.timer_index >= 16:
+            self.game_state = 'Revive'
 
     def exit_timer(self):
         self.timer_index += self.timer_speed
@@ -165,6 +171,10 @@ class Level:
             debug('player_status', player.status, 26)
         elif self.game_state == 'Won':
             self.exit_timer()
+        elif self.game_state == 'Dead':
+            self.dead_timer()
+        elif self.game_state == 'Revive':
+            self.recreate_level(self.pos, self.content, self.next_lvl)
         elif self.game_state == 'Next':
             level = levels[self.next_lvl]
             self.create_next_level(level['pos'], level['content'], level['next_lvl'])
