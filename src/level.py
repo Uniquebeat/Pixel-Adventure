@@ -7,13 +7,17 @@ from src.player import Player
 from src.effect import Collect_effect, Player_effect
 from src.background import Background
 from src.debug import debug
+from src.game_data import *
+from src.overworld import Node
 
 
 class Level:
-    def __init__(self, content, pos, create_overworld):
+    def __init__(self, content, pos, next_lvl, create_overworld, create_next_level):
         self.display_surface = pygame.display.get_surface()
         self.create_overworld = create_overworld
+        self.create_next_level = create_next_level
         self.pos = pos
+        self.next_lvl = next_lvl
         self.game_state = 'Start'
         self.level_data = load_pygame(content)
         self.visible = False
@@ -109,16 +113,19 @@ class Level:
         player = self.player.sprite
         if player.alive == False:
             self.game_state = 'End'
+        sprites = self.collectable_sprites.sprites()
+        if len(sprites) == 0:
+            self.game_state = 'Won'
 
     def enter_timer(self):
         self.timer_index += self.timer_speed
         if self.timer_index >= 7:
             self.game_state = 'Running'
 
-    def test_check(self):
-        for sprite in self.collectable_sprites:
-            if self.collectable_sprites.has(sprite) == False:
-                print("true")
+    def exit_timer(self):
+        self.timer_index += self.timer_speed
+        if self.timer_index >= 13:
+            self.game_state = 'Next'
 
     def run(self, dt):
 
@@ -141,7 +148,7 @@ class Level:
         self.visible_sprites.draw(self.display_surface)
 
         # Player
-        if self.game_state == 'Running':
+        if self.game_state == 'Running' or self.game_state == 'Won':
             self.player.update(dt)
             self.player.draw(self.display_surface)
 
@@ -151,12 +158,16 @@ class Level:
             self.enter_timer()
         elif self.game_state == 'Running':
             self.check_collect()
-            self.test_check()
             self.check_damage()
             self.check_bounce()
             self.check_game_stage()
             player = self.player.sprite
             debug('player_status', player.status, 26)
+        elif self.game_state == 'Won':
+            self.exit_timer()
+        elif self.game_state == 'Next':
+            level = levels[self.next_lvl]
+            self.create_next_level(level['pos'], level['content'], level['next_lvl'])
 
         debug('Level', self.level_data)
         debug('game_state', self.game_state, 18)
