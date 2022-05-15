@@ -40,6 +40,8 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                        pygame.quit()
                        sys.exit()
+                    if event.key == pygame.K_F11:
+                        pygame.display.toggle_fullscreen()
 
             self.screen.fill((33, 31, 48))
             if self.status == 'Overworld':
