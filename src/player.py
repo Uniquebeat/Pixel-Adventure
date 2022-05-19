@@ -8,6 +8,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load('graphics/player/Idle/a.png').convert_alpha()
         self.rect = self.image.get_rect(center=(pos[0]-3, pos[1]-7))
         self.hitbox = self.rect.inflate(-15, 0)
+        self.old_hitbox = self.hitbox.copy()
         self.tiles = tiles
         self.oneway_tiles = oneway_tiles
         self.pressed = False
@@ -16,7 +17,7 @@ class Player(pygame.sprite.Sprite):
         # Movement
         self.pos = pygame.math.Vector2(self.rect.center)
         self.direction = pygame.math.Vector2()
-        self.speed = 86
+        self.speed = 120
         self.gravity = 6
         self.jumpforce = -2.5
         self.current_x = 0
@@ -197,6 +198,7 @@ class Player(pygame.sprite.Sprite):
         self.wall_jumped = True
 
     def update(self, dt):
+        self.old_hitbox = self.hitbox.copy()
         self.get_input(dt)
         self.get_status()
         self.animate(dt)

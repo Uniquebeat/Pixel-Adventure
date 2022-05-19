@@ -2,7 +2,7 @@ import pygame
 from pytmx.util_pygame import load_pygame
 from src.setting import *
 from src.support import import_csv_layout
-from src.tile import Basic_Tile, CollectableFruit, Saw, FallingPlatform, BouncePlatform, OneWay_Tile
+from src.tile import *
 from src.player import Player
 from src.effect import Collect_effect, Player_effect
 from src.background import Background
@@ -17,6 +17,7 @@ class Level:
         self.recreate_level = recreate_level
         self.create_next_level = create_next_level
         self.pos = pos
+        self.player_pos = None
         self.next_lvl = next_lvl
         self.game_state = 'Start'
         self.content = content
@@ -33,6 +34,7 @@ class Level:
         self.damageable_sprites = pygame.sprite.Group()
         self.bounce_platforms = pygame.sprite.Group()
         self.oneway_sprites = pygame.sprite.Group()
+        self.rockhead_sprites = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.hitbox_sprites = pygame.sprite.Group()
         
@@ -60,16 +62,19 @@ class Level:
 
     def setup_Enter(self):
         self.enter_sound.play()
-        Player_effect((64, 230), 'Enter', [self.effect_sprites, self.visible_sprites], self.create_player)
+        Player_effect(self.player_pos, 'Enter', [self.effect_sprites, self.visible_sprites], self.create_player)
 
     def setup_layout(self):
         Background([self.background_sprite])
+        RockHead((100, 200), [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
         for layer in self.level_data.visible_layers:
             if hasattr(layer, 'data'):
                 for x, y, surface in layer.tiles():
                     pos = (x*16, y*16)
                     if layer.name in ('StaticTiles'):
                         Basic_Tile(pos, [self.visible_sprites, self.obstacle_sprites, self.hitbox_sprites], surface)
+                    if layer.name in ('Player'):
+                        self.player_pos = pos
                     if layer.name in ('OnewayTiles'):
                         OneWay_Tile(pos, [self.visible_sprites, self.oneway_sprites, self.hitbox_sprites], surface)
                     if layer.name in ('SpikeTiles'):
@@ -80,7 +85,7 @@ class Level:
                         CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.collectable_sprites, self.hitbox_sprites], 'Cherry')
         
     def create_player(self):
-        Player((64, 230), [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.create_dead_effect)
+        Player(self.player_pos, [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.create_dead_effect)
 
     def create_dead_effect(self):
         player = self.player.sprite
@@ -149,6 +154,8 @@ class Level:
         self.effect_sprites.update()
         # BouncePlatforms
         self.bounce_platforms.update(dt)
+        # RockHead
+        self.rockhead_sprites.update(dt)
 
         # DRAW METHOD
         self.visible_sprites.draw(self.display_surface)
