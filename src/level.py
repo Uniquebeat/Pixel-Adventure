@@ -2,7 +2,7 @@ import pygame
 from pytmx.util_pygame import load_pygame
 from src.setting import *
 from src.support import import_csv_layout
-from src.tile import *
+from src.objects import *
 from src.player import Player
 from src.effect import Collect_effect, Player_effect
 from src.background import Background
@@ -66,7 +66,7 @@ class Level:
 
     def setup_layout(self):
         Background([self.background_sprite])
-        RockHead((100, 200), [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
+        RockHead((100, 200), 'AntiClock', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
         for layer in self.level_data.visible_layers:
             if hasattr(layer, 'data'):
                 for x, y, surface in layer.tiles():

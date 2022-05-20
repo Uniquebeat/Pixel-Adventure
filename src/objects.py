@@ -144,27 +144,35 @@ class BouncePlatform(pygame.sprite.Sprite):
 
 
 class RockHead(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, obstacle_sprites):
+    def __init__(self, pos, type, groups, obstacle_sprites):
         super().__init__(groups)
         self.image = pygame.image.load('graphics/Traps/RockHead/Idle/0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = self.rect
+        self.pos = pygame.math.Vector2(self.rect.topleft)
+        self.hitbox = pygame.Rect(self.pos.x + 5, self.pos.y + 5, 32, 32)
         self.obstacle_sprites = obstacle_sprites
-        self.pos = pygame.math.Vector2(self.hitbox.topleft)
+        self.type = type
 
         # Movement
-        self.direction = pygame.math.Vector2(1, 0)
+        if self.type == 'Horizontal':
+            self.direction = pygame.math.Vector2(1, 0)
+        elif self.type == 'Vertical':
+            self.direction = pygame.math.Vector2(0, 1)
+        elif self.type == 'Clock':
+            self.direction = pygame.math.Vector2(1, 0)
+        elif self.type == 'AntiClock':
+            self.direction = pygame.math.Vector2(-1, 0)
         self.speed = 180
 
         # Animation
         self.import_assets()
         self.status = 'Idle'
         self.frame_index = 0
-        self.animation_speed = 16
+        self.animation_speed = 18
 
     def import_assets(self):
         self.animations = {
-            'Idle':[], 'RightHit':[], 'LeftHit':[]
+            'Idle':[], 'RightHit':[], 'LeftHit':[], 'UpHit':[], 'DownHit':[]
         }
         path = 'graphics/Traps/Rockhead'
         for animation in self.animations.keys():
@@ -182,9 +190,11 @@ class RockHead(pygame.sprite.Sprite):
             self.frame_index = 3
         self.image = animations[int(self.frame_index)]
 
-    def check_collide(self):
+    def horizontal(self):
         for sprite in self.obstacle_sprites:
             if self.hitbox.colliderect(sprite.hitbox):
+                self.direction.x = 0
+                self.direction.y = 0
                 if self.direction.x > 0:
                     self.status = 'RightHit'
                     self.hitbox.right = sprite.hitbox.left
@@ -196,12 +206,64 @@ class RockHead(pygame.sprite.Sprite):
                     self.pos.x = self.hitbox.x
                     self.direction.x = 1
 
+    def vertical(self):
+        for sprite in self.obstacle_sprites:
+            if self.hitbox.colliderect(sprite.hitbox):
+                if self.direction.y > 0:
+                    self.status = 'DownHit'
+                    self.hitbox.bottom = sprite.hitbox.top
+                    self.pos.y = self.hitbox.y
+                    self.direction.y = -1
+                elif self.direction.y < 0:
+                    self.status = 'UpHit'
+                    self.hitbox.top = sprite.hitbox.bottom
+                    self.pos.y = self.hitbox.y
+                    self.direction.y = 1
+
+    def clock(self, change):
+        for sprite in self.obstacle_sprites:
+            if self.hitbox.colliderect(sprite.hitbox):
+                if self.direction.x > 0:
+                    self.status = 'RightHit'
+                    self.hitbox.right = sprite.hitbox.left
+                    self.pos.x = self.hitbox.x
+                    self.direction.x = 0 * change
+                    self.direction.y = 1 * change
+                elif self.direction.y > 0:
+                    self.status = 'DownHit'
+                    self.hitbox.bottom = sprite.hitbox.top
+                    self.pos.y = self.hitbox.y
+                    self.direction.x = -1 * change
+                    self.direction.y = 0 * change
+                elif self.direction.x < 0:
+                    self.status = 'LeftHit'
+                    self.hitbox.left = sprite.hitbox.right
+                    self.pos.x = self.hitbox.x
+                    self.direction.x = 0 * change
+                    self.direction.y = -1 * change
+                elif self.direction.y < 0:
+                    self.status = 'UpHit'
+                    self.hitbox.top = sprite.hitbox.bottom
+                    self.pos.y = self.hitbox.y
+                    self.direction.x = 1 * change
+                    self.direction.y = 0 * change
+
     def move(self, dt):
         self.pos.x += self.direction.x * self.speed * dt
         self.hitbox.x = round(self.pos.x)
-        self.rect.topleft = self.hitbox.topleft
+        self.pos.y += self.direction.y * self.speed * dt
+        self.hitbox.y = round(self.pos.y)
+        self.rect.center = self.hitbox.center
 
     def update(self, dt):
-        self.check_collide()
+        if self.type == 'Horizontal':
+            self.horizontal()
+        elif self.type == 'Vertical':
+            self.vertical()
+        elif self.type == 'Clock':
+            self.clock(1)
+        elif self.type == 'AntiClock':
+            self.clock(-1)
+        
         self.move(dt)
         self.animate(dt)
