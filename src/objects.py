@@ -10,6 +10,10 @@ class Basic_Tile(pygame.sprite.Sprite):
         self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect
+        self.old_hitbox = self.hitbox.copy()
+
+    def update(self, dt):
+        self.old_hitbox = self.hitbox.copy()
 
 class OneWay_Tile(pygame.sprite.Sprite):
     def __init__(self, pos, group, surface):
@@ -193,8 +197,6 @@ class RockHead(pygame.sprite.Sprite):
     def horizontal(self):
         for sprite in self.obstacle_sprites:
             if self.hitbox.colliderect(sprite.hitbox):
-                self.direction.x = 0
-                self.direction.y = 0
                 if self.direction.x > 0:
                     self.status = 'RightHit'
                     self.hitbox.right = sprite.hitbox.left
@@ -256,6 +258,7 @@ class RockHead(pygame.sprite.Sprite):
         self.rect.center = self.hitbox.center
 
     def update(self, dt):
+        self.old_hitbox = self.hitbox.copy()
         if self.type == 'Horizontal':
             self.horizontal()
         elif self.type == 'Vertical':

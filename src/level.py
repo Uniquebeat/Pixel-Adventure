@@ -85,7 +85,7 @@ class Level:
                         CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.collectable_sprites, self.hitbox_sprites], 'Cherry')
         
     def create_player(self):
-        Player(self.player_pos, [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.create_dead_effect)
+        Player(self.player_pos, [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.rockhead_sprites, self.create_dead_effect)
 
     def create_dead_effect(self):
         player = self.player.sprite
