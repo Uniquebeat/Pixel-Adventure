@@ -270,3 +270,25 @@ class RockHead(pygame.sprite.Sprite):
         
         self.move(dt)
         self.animate(dt)
+
+
+class Arrow(pygame.sprite.Sprite):
+    def __init__(self, pos, groups):
+        super().__init__(groups)
+        self.image = pygame.image.load('graphics/Traps/Arrow/Idle/0.png').convert_alpha()
+        self.rect = self.image.get_rect(topleft = (pos[0]-2, pos[1]-2))
+        self.hitbox = self.rect.inflate(-2, -2)
+
+        # animation
+        self.frames = import_folder('graphics/Traps/Arrow/Idle')
+        self.frame_index = 0
+        self.animation_speed = 14
+
+    def animate(self, dt):
+        self.frame_index += self.animation_speed * dt
+        if self.frame_index >= len(self.frames):
+            self.frame_index = 0
+        self.image = self.frames[int(self.frame_index)]
+
+    def update(self, dt):
+        self.animate(dt)

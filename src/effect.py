@@ -57,3 +57,23 @@ class Player_effect(pygame.sprite.Sprite):
 	def update(self):
 		self.animate()
 
+
+class Arrow_effect(pygame.sprite.Sprite):
+	def __init__(self, pos, groups):
+		super().__init__(groups)
+		self.image = pygame.image.load('graphics/Traps/Arrow/Hit/0.png').convert_alpha()
+		self.rect = self.image.get_rect(topleft=(pos[0]-2, pos[1]-2))
+		# animation
+		self.frames = import_folder('graphics/Traps/Arrow/Hit')
+		self.animation_speed = 0.14
+		self.frame_index = 0
+
+	def animate(self):
+		self.frame_index += self.animation_speed
+		if self.frame_index >= len(self.frames):
+			self.kill()
+		else:
+			self.image = self.frames[int(self.frame_index)]
+
+	def update(self):
+		self.animate()

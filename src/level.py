@@ -1,10 +1,11 @@
+from operator import truediv
 import pygame
 from pytmx.util_pygame import load_pygame
 from src.setting import *
 from src.support import import_csv_layout
 from src.objects import *
 from src.player import Player
-from src.effect import Collect_effect, Player_effect
+from src.effect import Collect_effect, Player_effect, Arrow_effect
 from src.background import Background
 from src.debug import debug
 from src.game_data import *
@@ -35,6 +36,7 @@ class Level:
         self.bounce_platforms = pygame.sprite.Group()
         self.oneway_sprites = pygame.sprite.Group()
         self.rockhead_sprites = pygame.sprite.Group()
+        self.arrow_sprites = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.hitbox_sprites = pygame.sprite.Group()
         
@@ -67,6 +69,7 @@ class Level:
     def setup_layout(self):
         Background([self.background_sprite])
         RockHead((100, 200), 'AntiClock', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
+        Arrow((200, 200), [self.visible_sprites, self.arrow_sprites])
         for layer in self.level_data.visible_layers:
             if hasattr(layer, 'data'):
                 for x, y, surface in layer.tiles():
@@ -115,6 +118,15 @@ class Level:
                 player.direction.y = -3.5
                 player.double_jump = True
 
+    def check_arrow(self):
+        player = self.player.sprite
+        for sprite in self.arrow_sprites.sprites():
+            if player.hitbox.colliderect(sprite.hitbox):
+                Arrow_effect(sprite.rect.topleft, [self.visible_sprites, self.effect_sprites])
+                player.direction.y = -3.2
+                player.double_jump = True
+                sprite.kill()
+
     def check_game_stage(self):
         player = self.player.sprite
         if player.alive == False:
@@ -156,6 +168,8 @@ class Level:
         self.bounce_platforms.update(dt)
         # RockHead
         self.rockhead_sprites.update(dt)
+        # Arrow
+        self.arrow_sprites.update(dt)
 
         # DRAW METHOD
         self.visible_sprites.draw(self.display_surface)
@@ -173,6 +187,7 @@ class Level:
             self.check_collect()
             self.check_damage()
             self.check_bounce()
+            self.check_arrow()
             self.check_game_stage()
             player = self.player.sprite
             debug('player_status', player.status, 26)
