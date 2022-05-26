@@ -15,6 +15,13 @@ class Basic_Tile(pygame.sprite.Sprite):
     def update(self, dt):
         self.old_hitbox = self.hitbox.copy()
 
+class Spike_Tile(pygame.sprite.Sprite):
+    def __init__(self, pos, group, surface=pygame.Surface((tile_size, tile_size))):
+        super().__init__(group)
+        self.image = surface
+        self.rect = self.image.get_rect(topleft=pos)
+        self.hitbox = self.rect.inflate(-4, -2)
+
 class OneWay_Tile(pygame.sprite.Sprite):
     def __init__(self, pos, group, surface):
         super().__init__(group)
@@ -37,7 +44,7 @@ class CollectableFruit(pygame.sprite.Sprite):
 
     def import_assets(self):
         self.animations = {
-                'Apple' : [], 'Cherry': []
+                'Apple' : [], 'Cherry': [], 'Melon': []
         }
         path = 'graphics/fruits/'
         for animation in self.animations.keys():
@@ -156,6 +163,10 @@ class RockHead(pygame.sprite.Sprite):
         self.hitbox = pygame.Rect(self.pos.x + 5, self.pos.y + 5, 32, 32)
         self.obstacle_sprites = obstacle_sprites
         self.type = type
+        self.stop = False
+        self.stop_time = None
+        self.cooldown_time = 390
+        self.state = 'Move'
 
         # Movement
         if self.type == 'Horizontal':
@@ -197,6 +208,8 @@ class RockHead(pygame.sprite.Sprite):
     def horizontal(self):
         for sprite in self.obstacle_sprites:
             if self.hitbox.colliderect(sprite.hitbox):
+                self.stop = True
+                self.stop_time = pygame.time.get_ticks()
                 if self.direction.x > 0:
                     self.status = 'RightHit'
                     self.hitbox.right = sprite.hitbox.left
@@ -211,6 +224,8 @@ class RockHead(pygame.sprite.Sprite):
     def vertical(self):
         for sprite in self.obstacle_sprites:
             if self.hitbox.colliderect(sprite.hitbox):
+                self.stop = True
+                self.stop_time = pygame.time.get_ticks()
                 if self.direction.y > 0:
                     self.status = 'DownHit'
                     self.hitbox.bottom = sprite.hitbox.top
@@ -225,6 +240,8 @@ class RockHead(pygame.sprite.Sprite):
     def clock(self, change):
         for sprite in self.obstacle_sprites:
             if self.hitbox.colliderect(sprite.hitbox):
+                self.stop = True
+                self.stop_time = pygame.time.get_ticks()
                 if self.direction.x > 0:
                     self.status = 'RightHit'
                     self.hitbox.right = sprite.hitbox.left
@@ -257,7 +274,13 @@ class RockHead(pygame.sprite.Sprite):
         self.hitbox.y = round(self.pos.y)
         self.rect.center = self.hitbox.center
 
-    def update(self, dt):
+    def cooldown(self):
+        current = pygame.time.get_ticks()
+        if self.stop == True:
+            if current - self.stop_time >= self.cooldown_time:
+                self.stop = False
+
+    def check_type(self):
         self.old_hitbox = self.hitbox.copy()
         if self.type == 'Horizontal':
             self.horizontal()
@@ -267,9 +290,14 @@ class RockHead(pygame.sprite.Sprite):
             self.clock(1)
         elif self.type == 'AntiClock':
             self.clock(-1)
-        
-        self.move(dt)
+
+    def update(self, dt):
+        self.old_hitbox = self.hitbox.copy()
+        self.check_type()
+        if self.stop == False:
+            self.move(dt)
         self.animate(dt)
+        self.cooldown()
 
 
 class Arrow(pygame.sprite.Sprite):
