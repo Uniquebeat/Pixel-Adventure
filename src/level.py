@@ -80,12 +80,16 @@ class Level:
                         OneWay_Tile(pos, [self.visible_sprites, self.oneway_sprites, self.hitbox_sprites], surface)
                     if layer.name in ('SpikeTiles'):
                         Spike_Tile((pos[0], pos[1]+9), [self.visible_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
+                    if layer.name in ('ArrowTiles'):
+                        Arrow(pos, [self.visible_sprites, self.arrow_sprites])
                     if layer.name in ('AppleTiles'):
                         CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.collectable_sprites, self.hitbox_sprites], 'Apple')
                     if layer.name in ('CherryTiles'):
                         CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.collectable_sprites, self.hitbox_sprites], 'Cherry')
                     if layer.name in ('MelonTiles'):
                         CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.collectable_sprites, self.hitbox_sprites], 'Melon')
+                    if layer.name in ('PineappleTiles'):
+                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.collectable_sprites, self.hitbox_sprites], 'Pineapple')
         
     def create_player(self):
         Player(self.player_pos, [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.rockhead_sprites, self.create_dead_effect)
@@ -200,9 +204,9 @@ class Level:
             self.recreate_level(self.pos, self.content, self.next_lvl)
         elif self.game_state == 'Next':
             level = levels[self.next_lvl]
-            if level['number'] <= 3:
+            if self.next_lvl < 5:
                 self.create_next_level(level['pos'], level['content'], level['next_lvl'])
-            elif level['number'] >= 4:
+            else:
                 self.create_overworld(self.pos)
 
         debug('Level', self.level_data)

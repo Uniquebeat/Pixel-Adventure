@@ -44,7 +44,7 @@ class CollectableFruit(pygame.sprite.Sprite):
 
     def import_assets(self):
         self.animations = {
-                'Apple' : [], 'Cherry': [], 'Melon': []
+                'Apple' : [], 'Cherry': [], 'Melon': [], 'Pineapple': []
         }
         path = 'graphics/fruits/'
         for animation in self.animations.keys():
