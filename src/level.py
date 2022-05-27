@@ -81,7 +81,9 @@ class Level:
                     if layer.name in ('SpikeTiles'):
                         Spike_Tile((pos[0], pos[1]+9), [self.visible_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
                     if layer.name in ('ArrowTiles'):
-                        Arrow(pos, [self.visible_sprites, self.arrow_sprites])
+                        Arrow(pos, [self.visible_sprites, self.arrow_sprites, self.hitbox_sprites])
+                    if layer.name in ('BounceTiles'):
+                        BouncePlatform((pos[0], pos[1]-12), [self.visible_sprites, self.bounce_platforms, self.hitbox_sprites])
                     if layer.name in ('AppleTiles'):
                         CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.collectable_sprites, self.hitbox_sprites], 'Apple')
                     if layer.name in ('CherryTiles'):
@@ -119,7 +121,7 @@ class Level:
         for sprite in self.bounce_platforms.sprites():
             if player.hitbox.colliderect(sprite.hitbox):
                 sprite.status = 'Hit'
-                player.direction.y = -3.5
+                player.direction.y = -3.8
                 player.double_jump = True
 
     def check_arrow(self):
@@ -203,8 +205,8 @@ class Level:
         elif self.game_state == 'Revive':
             self.recreate_level(self.pos, self.content, self.next_lvl)
         elif self.game_state == 'Next':
-            level = levels[self.next_lvl]
-            if self.next_lvl < 5:
+            if self.next_lvl < 6:
+                level = levels[self.next_lvl]
                 self.create_next_level(level['pos'], level['content'], level['next_lvl'])
             else:
                 self.create_overworld(self.pos)

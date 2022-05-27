@@ -228,8 +228,8 @@ class Player(pygame.sprite.Sprite):
 
     def apply_gravity(self, dt):
         self.direction.y += self.gravity * dt
-        if self.direction.y >= 7:
-            self.direction.y = 7
+        if self.direction.y >= 6.6:
+            self.direction.y = 6.6
         self.pos.y += self.direction.y
         self.hitbox.y = round(self.pos.y)
 

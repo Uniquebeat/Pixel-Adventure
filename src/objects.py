@@ -123,7 +123,7 @@ class BouncePlatform(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = pygame.image.load('graphics/Traps/BouncePlatform/Idle/0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(-2, -18)
+        self.hitbox = pygame.Rect(self.rect.x + 2, self.rect.y + 17, 23, 9)
 
         # animations 
         self.import_assets()
