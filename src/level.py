@@ -30,6 +30,7 @@ class Level:
         self.background_sprite = pygame.sprite.GroupSingle()
         self.obstacle_sprites = pygame.sprite.Group()
         self.visible_sprites = pygame.sprite.Group()
+        self.entity_sprites = pygame.sprite.Group()
         self.collectable_sprites = pygame.sprite.Group()
         self.effect_sprites = pygame.sprite.Group()
         self.damageable_sprites = pygame.sprite.Group()
@@ -45,6 +46,7 @@ class Level:
         self.collect_sound = pygame.mixer.Sound('audio/collect.wav')
         self.hurt_sound = pygame.mixer.Sound('audio/hurt.wav')
         self.dead_sound = pygame.mixer.Sound('audio/dead.wav')
+        self.bounce_sound = pygame.mixer.Sound('audio/bounce.wav')
 
         # setup level
         self.timer_index = 0
@@ -72,26 +74,50 @@ class Level:
             if hasattr(layer, 'data'):
                 for x, y, surface in layer.tiles():
                     pos = (x*16, y*16)
+
+                    # TILES---------------------------------#
                     if layer.name in ('StaticTiles'):
                         Basic_Tile(pos, [self.visible_sprites, self.obstacle_sprites, self.hitbox_sprites], surface)
-                    if layer.name in ('Player'):
-                        self.player_pos = pos
                     if layer.name in ('OnewayTiles'):
                         OneWay_Tile(pos, [self.visible_sprites, self.oneway_sprites, self.hitbox_sprites], surface)
-                    if layer.name in ('SpikeTiles'):
-                        Spike_Tile((pos[0], pos[1]+9), [self.visible_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
+
+                    # PLAYER--------------------------------#
+                    if layer.name in ('Player'):
+                        self.player_pos = pos
+
+                    # OBJECTS-------------------------------#
+                    if layer.name in ('SpikeTilesBottom'):
+                        Spike_Tile((pos[0], pos[1]), 'bottom', [self.visible_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
+                    if layer.name in ('SpikeTilesTop'):
+                        Spike_Tile((pos[0], pos[1]), 'top', [self.visible_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
+                    if layer.name in ('SpikeTilesRight'):
+                        Spike_Tile((pos[0], pos[1]), 'right', [self.visible_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
+                    if layer.name in ('SpikeTilesLeft'):
+                        Spike_Tile((pos[0], pos[1]), 'left', [self.visible_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
                     if layer.name in ('ArrowTiles'):
-                        Arrow(pos, [self.visible_sprites, self.arrow_sprites, self.hitbox_sprites])
+                        Arrow(pos, [self.visible_sprites, self.entity_sprites, self.arrow_sprites, self.hitbox_sprites])
                     if layer.name in ('BounceTiles'):
-                        BouncePlatform((pos[0], pos[1]-12), [self.visible_sprites, self.bounce_platforms, self.hitbox_sprites])
+                        BouncePlatform((pos[0], pos[1]-12), [self.visible_sprites, self.entity_sprites, self.bounce_platforms, self.hitbox_sprites])
+                    if layer.name in ('RockHead-H'):
+                        RockHead((pos[0]+5, pos[1]-34), 'Horizontal', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
+                    if layer.name in ('RockHead-V'):
+                        RockHead((pos[0]+5, pos[1]-34), 'Vertical', [self.visible_sprites, self.rockhead_sprites], self.obstacle_sprites)
+                    if layer.name in ('RockHead-C'):
+                        RockHead((pos[0]+5, pos[1]-34), 'Clock', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
+                    if layer.name in ('RockHead-A'):
+                        RockHead((pos[0]+5, pos[1]-34), 'AntiClock', [self.visible_sprites, self.rockhead_sprites], self.obstacle_sprites)
+                    
+                    # FRUITS--------------------------------#
                     if layer.name in ('AppleTiles'):
-                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.collectable_sprites, self.hitbox_sprites], 'Apple')
+                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.entity_sprites, self.collectable_sprites, self.hitbox_sprites], 'Apple')
                     if layer.name in ('CherryTiles'):
-                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.collectable_sprites, self.hitbox_sprites], 'Cherry')
+                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.entity_sprites, self.collectable_sprites, self.hitbox_sprites], 'Cherry')
                     if layer.name in ('MelonTiles'):
-                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.collectable_sprites, self.hitbox_sprites], 'Melon')
+                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.entity_sprites, self.collectable_sprites, self.hitbox_sprites], 'Melon')
                     if layer.name in ('PineappleTiles'):
-                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.collectable_sprites, self.hitbox_sprites], 'Pineapple')
+                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.entity_sprites, self.collectable_sprites, self.hitbox_sprites], 'Pineapple')
+                    if layer.name in ('StrawberryTiles'):
+                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.entity_sprites, self.collectable_sprites, self.hitbox_sprites], 'Strawberry')
         
     def create_player(self):
         Player(self.player_pos, [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.rockhead_sprites, self.create_dead_effect)
@@ -121,6 +147,7 @@ class Level:
         for sprite in self.bounce_platforms.sprites():
             if player.hitbox.colliderect(sprite.hitbox):
                 sprite.status = 'Hit'
+                self.bounce_sound.play()
                 player.direction.y = -3.8
                 player.double_jump = True
 
@@ -149,12 +176,14 @@ class Level:
 
     def dead_timer(self):
         self.timer_index += self.timer_speed
-        if self.timer_index >= 16:
+        if self.timer_index >= 23:
+            self.display_surface.fill('black')
             self.game_state = 'Revive'
 
     def exit_timer(self):
         self.timer_index += self.timer_speed
-        if self.timer_index >= 13:
+        if self.timer_index >= 16:
+            self.display_surface.fill('black')
             self.game_state = 'Next'
 
     def run(self, dt):
@@ -165,18 +194,10 @@ class Level:
         # UPDATE METHOD
         # Background
         self.background_sprite.update(dt)
-        # Fruits
-        self.collectable_sprites.update(dt)
-        # Spike
-        self.damageable_sprites.update(dt)
         # Effects
         self.effect_sprites.update()
-        # BouncePlatforms
-        self.bounce_platforms.update(dt)
-        # RockHead
-        self.rockhead_sprites.update(dt)
-        # Arrow
-        self.arrow_sprites.update(dt)
+        # Entity
+        self.entity_sprites.update(dt)
 
         # DRAW METHOD
         self.visible_sprites.draw(self.display_surface)
@@ -196,6 +217,7 @@ class Level:
             self.check_bounce()
             self.check_arrow()
             self.check_game_stage()
+            self.rockhead_sprites.update(dt)
             player = self.player.sprite
             debug('player_status', player.status, 26)
         elif self.game_state == 'Won':
@@ -205,7 +227,7 @@ class Level:
         elif self.game_state == 'Revive':
             self.recreate_level(self.pos, self.content, self.next_lvl)
         elif self.game_state == 'Next':
-            if self.next_lvl < 6:
+            if self.next_lvl < 8:
                 level = levels[self.next_lvl]
                 self.create_next_level(level['pos'], level['content'], level['next_lvl'])
             else:

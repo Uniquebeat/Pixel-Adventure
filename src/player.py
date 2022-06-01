@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos, group, tiles, oneway_tiles, rockhead_sprites, create_dead_effect):
         super().__init__(group)
         self.image = pygame.image.load('graphics/player/Idle/a.png').convert_alpha()
-        self.rect = self.image.get_rect(center=(pos[0]-3, pos[1]-7))
+        self.rect = self.image.get_rect(center=pos)
         self.hitbox = self.rect.inflate(-15, 0)
         self.old_hitbox = self.hitbox.copy()
         self.tiles = tiles

@@ -16,11 +16,18 @@ class Basic_Tile(pygame.sprite.Sprite):
         self.old_hitbox = self.hitbox.copy()
 
 class Spike_Tile(pygame.sprite.Sprite):
-    def __init__(self, pos, group, surface=pygame.Surface((tile_size, tile_size))):
+    def __init__(self, pos, type, group, surface=pygame.Surface((tile_size, tile_size))):
         super().__init__(group)
         self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(-4, -2)
+        if type == 'bottom':
+            self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+11, 14, 4)
+        elif type == 'top':
+            self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+1, 14, 4)
+        elif type == 'right':
+            self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+1, 4, 14)
+        elif type == 'left':
+            self.hitbox = pygame.Rect(self.rect.x+11, self.rect.y+1, 4, 14)
 
 class OneWay_Tile(pygame.sprite.Sprite):
     def __init__(self, pos, group, surface):
@@ -44,7 +51,7 @@ class CollectableFruit(pygame.sprite.Sprite):
 
     def import_assets(self):
         self.animations = {
-                'Apple' : [], 'Cherry': [], 'Melon': [], 'Pineapple': []
+                'Apple' : [], 'Cherry': [], 'Melon': [], 'Pineapple': [], 'Strawberry':[]
         }
         path = 'graphics/fruits/'
         for animation in self.animations.keys():
@@ -177,13 +184,16 @@ class RockHead(pygame.sprite.Sprite):
             self.direction = pygame.math.Vector2(1, 0)
         elif self.type == 'AntiClock':
             self.direction = pygame.math.Vector2(-1, 0)
-        self.speed = 180
+        self.speed = 190
 
         # Animation
         self.import_assets()
         self.status = 'Idle'
         self.frame_index = 0
         self.animation_speed = 18
+
+        # Audio
+        self.hitsound = pygame.mixer.Sound('audio/headhit.wav')
 
     def import_assets(self):
         self.animations = {
@@ -209,6 +219,7 @@ class RockHead(pygame.sprite.Sprite):
         for sprite in self.obstacle_sprites:
             if self.hitbox.colliderect(sprite.hitbox):
                 self.stop = True
+                self.hitsound.play()
                 self.stop_time = pygame.time.get_ticks()
                 if self.direction.x > 0:
                     self.status = 'RightHit'
@@ -225,6 +236,7 @@ class RockHead(pygame.sprite.Sprite):
         for sprite in self.obstacle_sprites:
             if self.hitbox.colliderect(sprite.hitbox):
                 self.stop = True
+                self.hitsound.play()
                 self.stop_time = pygame.time.get_ticks()
                 if self.direction.y > 0:
                     self.status = 'DownHit'
@@ -241,6 +253,7 @@ class RockHead(pygame.sprite.Sprite):
         for sprite in self.obstacle_sprites:
             if self.hitbox.colliderect(sprite.hitbox):
                 self.stop = True
+                self.hitsound.play()
                 self.stop_time = pygame.time.get_ticks()
                 if self.direction.x > 0:
                     self.status = 'RightHit'
@@ -272,7 +285,8 @@ class RockHead(pygame.sprite.Sprite):
         self.hitbox.x = round(self.pos.x)
         self.pos.y += self.direction.y * self.speed * dt
         self.hitbox.y = round(self.pos.y)
-        self.rect.center = self.hitbox.center
+        self.rect.x = self.hitbox.x - 5
+        self.rect.y = self.hitbox.y - 5
 
     def cooldown(self):
         current = pygame.time.get_ticks()

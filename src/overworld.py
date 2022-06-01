@@ -24,24 +24,29 @@ class Select(pygame.sprite.Sprite):
         # movement
         self.direction = pygame.math.Vector2()
         self.pos = pygame.math.Vector2(self.rect.topleft)
+        self.select_sound = pygame.mixer.Sound('audio/select.wav')
 
     def get_input(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_d]:
             if not self.pressed:
+                self.select_sound.play()
                 self.pressed = True
                 self.rect.x += 64
         elif keys[pygame.K_a]:
             if not self.pressed:
+                self.select_sound.play()
                 self.pressed = True
                 self.rect.x -= 64
         elif keys[pygame.K_w]:
             if not self.pressed:
+                self.select_sound.play()
                 self.pressed = True
                 self.rect.y -= 64
         elif keys[pygame.K_s]:
             if not self.pressed:
+                self.select_sound.play()
                 self.pressed = True
                 self.rect.y += 64
         elif self.pressed:
@@ -71,6 +76,7 @@ class Overworld:
         self.node_sprites = pygame.sprite.Group()
         self.select_sprite = pygame.sprite.GroupSingle()
         self.setup()
+        self.selected_sound = pygame.mixer.Sound('audio/selected.wav')
 
     def setup(self):
         Background([self.background_sprite])
@@ -85,6 +91,7 @@ class Overworld:
         select = self.select_sprite.sprite
         for node in self.node_sprites.sprites():
             if keys[pygame.K_SPACE] and node.rect.colliderect(select.rect):
+                self.selected_sound.play()
                 self.create_level(node)
 
     def run(self, dt):
