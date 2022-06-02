@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = pygame.image.load('graphics/player/Idle/a.png').convert_alpha()
         self.rect = self.image.get_rect(center=pos)
-        self.hitbox = self.rect.inflate(-15, 0)
+        self.hitbox = pygame.Rect(self.rect.x+8, self.rect.y+7, 17, 25)
         self.old_hitbox = self.hitbox.copy()
         self.tiles = tiles
         self.oneway_tiles = oneway_tiles
@@ -17,9 +17,9 @@ class Player(pygame.sprite.Sprite):
         self.alive = True
 
         # Movement
-        self.pos = pygame.math.Vector2(self.rect.center)
+        self.pos = pygame.math.Vector2(self.hitbox.topleft)
         self.direction = pygame.math.Vector2()
-        self.speed = 120
+        self.speed = 118
         self.gravity = 6
         self.jumpforce = -2.5
         self.current_x = 0
@@ -43,6 +43,7 @@ class Player(pygame.sprite.Sprite):
 
         # Audio
         self.jump_sound = pygame.mixer.Sound('audio/jump.wav')
+        self.jump_sound.set_volume(0.4)
 
 
     def import_character_assets(self):
@@ -113,16 +114,13 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE]:
             if self.on_ground:
                     self.jump()
-                    self.jump_sound.play()
             if not self.pressed:
                 self.jumping = True
                 self.pressed = True
                 if (self.on_right or self.on_left) and self.wall_jumped == False:
                     self.wall_jump()
-                    self.jump_sound.play()
                 elif not self.on_ground and self.double_jump:
                     self.jump()
-                    self.jump_sound.play()
                     self.double_jump = False
         elif self.pressed:
             self.pressed = False
@@ -224,7 +222,8 @@ class Player(pygame.sprite.Sprite):
             self.static_collision('vertical')
             self.rockhead_collision('vertical')
             self.oneway_collision()
-            self.rect.center = self.hitbox.center
+            self.rect.x = self.hitbox.x - 8
+            self.rect.y = self.hitbox.y - 7
 
     def apply_gravity(self, dt):
         self.direction.y += self.gravity * dt
@@ -235,10 +234,12 @@ class Player(pygame.sprite.Sprite):
 
     def jump(self):
         self.direction.y = self.jumpforce
+        self.jump_sound.play()
 
     def wall_jump(self):
         self.direction.x *= -8
         self.direction.y = self.jumpforce
+        self.jump_sound.play()
         self.wall_jumped = True
 
     def inwall_damage(self):

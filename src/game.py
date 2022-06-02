@@ -10,6 +10,7 @@ class Game:
     def __init__(self):
         pygame.init()
         pygame.mixer.init()
+        pygame.mixer.init()
         self.screen = pygame.display.set_mode((scaled_width, scaled_height), pygame.SCALED)
         pygame.display.set_caption('Pixel_Adventure_1')
         pygame.mouse.set_visible(False)

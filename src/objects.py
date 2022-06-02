@@ -21,13 +21,13 @@ class Spike_Tile(pygame.sprite.Sprite):
         self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
         if type == 'bottom':
-            self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+11, 14, 4)
+            self.hitbox = pygame.Rect(self.rect.x+3, self.rect.y+11, 10, 4)
         elif type == 'top':
-            self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+1, 14, 4)
+            self.hitbox = pygame.Rect(self.rect.x+3, self.rect.y+1, 10, 4)
         elif type == 'right':
-            self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+1, 4, 14)
+            self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+3, 4, 10)
         elif type == 'left':
-            self.hitbox = pygame.Rect(self.rect.x+11, self.rect.y+1, 4, 14)
+            self.hitbox = pygame.Rect(self.rect.x+11, self.rect.y+3, 4, 10)
 
 class OneWay_Tile(pygame.sprite.Sprite):
     def __init__(self, pos, group, surface):
@@ -166,8 +166,8 @@ class RockHead(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = pygame.image.load('graphics/Traps/RockHead/Idle/0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
-        self.pos = pygame.math.Vector2(self.rect.topleft)
-        self.hitbox = pygame.Rect(self.pos.x + 5, self.pos.y + 5, 32, 32)
+        self.hitbox = pygame.Rect(self.rect.x + 5, self.rect.y + 5, 32, 32)
+        self.pos = pygame.math.Vector2(self.hitbox.topleft)
         self.obstacle_sprites = obstacle_sprites
         self.type = type
         self.stop = False
@@ -184,7 +184,7 @@ class RockHead(pygame.sprite.Sprite):
             self.direction = pygame.math.Vector2(1, 0)
         elif self.type == 'AntiClock':
             self.direction = pygame.math.Vector2(-1, 0)
-        self.speed = 190
+        self.speed = 200
 
         # Animation
         self.import_assets()
@@ -194,6 +194,7 @@ class RockHead(pygame.sprite.Sprite):
 
         # Audio
         self.hitsound = pygame.mixer.Sound('audio/headhit.wav')
+        self.hitsound.set_volume(0.4)
 
     def import_assets(self):
         self.animations = {

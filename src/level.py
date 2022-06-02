@@ -43,10 +43,15 @@ class Level:
         
         # audio
         self.enter_sound = pygame.mixer.Sound('audio/enter.wav')
+        self.enter_sound.set_volume(0.4)
         self.collect_sound = pygame.mixer.Sound('audio/collect.wav')
+        self.collect_sound.set_volume(0.4)
         self.hurt_sound = pygame.mixer.Sound('audio/hurt.wav')
+        self.hurt_sound.set_volume(0.4)
         self.dead_sound = pygame.mixer.Sound('audio/dead.wav')
+        self.dead_sound.set_volume(0.4)
         self.bounce_sound = pygame.mixer.Sound('audio/bounce.wav')
+        self.bounce_sound.set_volume(0.4)
 
         # setup level
         self.timer_index = 0
@@ -99,13 +104,13 @@ class Level:
                     if layer.name in ('BounceTiles'):
                         BouncePlatform((pos[0], pos[1]-12), [self.visible_sprites, self.entity_sprites, self.bounce_platforms, self.hitbox_sprites])
                     if layer.name in ('RockHead-H'):
-                        RockHead((pos[0]+5, pos[1]-34), 'Horizontal', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
+                        RockHead((pos[0]-5, pos[1]-21), 'Horizontal', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
                     if layer.name in ('RockHead-V'):
-                        RockHead((pos[0]+5, pos[1]-34), 'Vertical', [self.visible_sprites, self.rockhead_sprites], self.obstacle_sprites)
+                        RockHead((pos[0]-5, pos[1]-21), 'Vertical', [self.visible_sprites, self.rockhead_sprites], self.obstacle_sprites)
                     if layer.name in ('RockHead-C'):
-                        RockHead((pos[0]+5, pos[1]-34), 'Clock', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
+                        RockHead((pos[0]-5, pos[1]-21), 'Clock', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
                     if layer.name in ('RockHead-A'):
-                        RockHead((pos[0]+5, pos[1]-34), 'AntiClock', [self.visible_sprites, self.rockhead_sprites], self.obstacle_sprites)
+                        RockHead((pos[0]-5, pos[1]-21), 'AntiClock', [self.visible_sprites, self.rockhead_sprites], self.obstacle_sprites)
                     
                     # FRUITS--------------------------------#
                     if layer.name in ('AppleTiles'):
@@ -227,7 +232,7 @@ class Level:
         elif self.game_state == 'Revive':
             self.recreate_level(self.pos, self.content, self.next_lvl)
         elif self.game_state == 'Next':
-            if self.next_lvl < 8:
+            if self.next_lvl < 9:
                 level = levels[self.next_lvl]
                 self.create_next_level(level['pos'], level['content'], level['next_lvl'])
             else:
