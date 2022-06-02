@@ -85,7 +85,7 @@ class Overworld:
         Select((self.pos), [self.select_sprite])
         graphics = import_folder('graphics/Overworld/levels')
         for node_data in levels.values():
-            surface = graphics[node_data['number']]
+            surface = graphics[node_data['number']-1]
             Node(node_data['pos'], node_data['content'], node_data['next_lvl'], [self.node_sprites], surface)
 
     def input(self):

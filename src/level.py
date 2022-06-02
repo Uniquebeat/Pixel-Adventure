@@ -29,14 +29,17 @@ class Level:
         # set the sprite group
         self.background_sprite = pygame.sprite.GroupSingle()
         self.obstacle_sprites = pygame.sprite.Group()
+        self.block_sprites = pygame.sprite.Group()
         self.visible_sprites = pygame.sprite.Group()
         self.entity_sprites = pygame.sprite.Group()
         self.collectable_sprites = pygame.sprite.Group()
         self.effect_sprites = pygame.sprite.Group()
         self.damageable_sprites = pygame.sprite.Group()
+        self.saw_sprites = pygame.sprite.Group()
         self.bounce_platforms = pygame.sprite.Group()
         self.oneway_sprites = pygame.sprite.Group()
         self.rockhead_sprites = pygame.sprite.Group()
+        self.spikehead_sprites = pygame.sprite.Group()
         self.arrow_sprites = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.hitbox_sprites = pygame.sprite.Group()
@@ -85,12 +88,16 @@ class Level:
                         Basic_Tile(pos, [self.visible_sprites, self.obstacle_sprites, self.hitbox_sprites], surface)
                     if layer.name in ('OnewayTiles'):
                         OneWay_Tile(pos, [self.visible_sprites, self.oneway_sprites, self.hitbox_sprites], surface)
+                    if layer.name in ('BlockTiles'):
+                        Basic_Tile(pos, [self.block_sprites])
 
                     # PLAYER--------------------------------#
                     if layer.name in ('Player'):
                         self.player_pos = pos
 
                     # OBJECTS-------------------------------#
+
+                    # Spikes
                     if layer.name in ('SpikeTilesBottom'):
                         Spike_Tile((pos[0], pos[1]), 'bottom', [self.visible_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
                     if layer.name in ('SpikeTilesTop'):
@@ -99,18 +106,47 @@ class Level:
                         Spike_Tile((pos[0], pos[1]), 'right', [self.visible_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
                     if layer.name in ('SpikeTilesLeft'):
                         Spike_Tile((pos[0], pos[1]), 'left', [self.visible_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
+
+                    # Arrow
                     if layer.name in ('ArrowTiles'):
                         Arrow(pos, [self.visible_sprites, self.entity_sprites, self.arrow_sprites, self.hitbox_sprites])
+                    
+                    # Bounce
+                    
                     if layer.name in ('BounceTiles'):
                         BouncePlatform((pos[0], pos[1]-12), [self.visible_sprites, self.entity_sprites, self.bounce_platforms, self.hitbox_sprites])
+                    
+                    # Rockhead
                     if layer.name in ('RockHead-H'):
                         RockHead((pos[0]-5, pos[1]-21), 'Horizontal', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
                     if layer.name in ('RockHead-V'):
-                        RockHead((pos[0]-5, pos[1]-21), 'Vertical', [self.visible_sprites, self.rockhead_sprites], self.obstacle_sprites)
+                        RockHead((pos[0]-5, pos[1]-21), 'Vertical', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
                     if layer.name in ('RockHead-C'):
                         RockHead((pos[0]-5, pos[1]-21), 'Clock', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
                     if layer.name in ('RockHead-A'):
                         RockHead((pos[0]-5, pos[1]-21), 'AntiClock', [self.visible_sprites, self.rockhead_sprites], self.obstacle_sprites)
+
+                    # Spikehead
+                    if layer.name in ('SpikeHead-H'):
+                        SpikeHead((pos[0]-11, pos[1]-26), 'Horizontal', [self.visible_sprites, self.damageable_sprites, self.spikehead_sprites, self.hitbox_sprites], self.obstacle_sprites)
+                    if layer.name in ('SpikeHead-V'):
+                        SpikeHead((pos[0]-11, pos[1]-26), 'Vertical', [self.visible_sprites, self.damageable_sprites, self.spikehead_sprites, self.hitbox_sprites], self.obstacle_sprites)
+                    if layer.name in ('SpikeHead-C'):
+                        SpikeHead((pos[0]-11, pos[1]-26), 'Clock', [self.visible_sprites, self.damageable_sprites, self.spikehead_sprites, self.hitbox_sprites], self.obstacle_sprites)
+                    if layer.name in ('SpikeHead-A'):
+                        SpikeHead((pos[0]-11, pos[1]-26), 'AntiClock', [self.visible_sprites, self.damageable_sprites, self.spikehead_sprites, self.hitbox_sprites], self.obstacle_sprites)
+
+                    # Saw
+                    if layer.name in ('Saw-Zero'):
+                        Saw((pos[0]-3, pos[1]-19), 'Zero', [self.saw_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
+                    if layer.name in ('Saw-H'):
+                        Saw((pos[0]-3, pos[1]-19), 'Horizontal', [self.saw_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
+                    if layer.name in ('Saw-V'):
+                        Saw((pos[0]-3, pos[1]-19), 'Vertical', [self.saw_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
+                    if layer.name in ('Saw-Clock'):
+                        Saw((pos[0]-3, pos[1]-19), 'Clock', [self.saw_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
+                    if layer.name in ('Saw-AntiClock'):
+                        Saw((pos[0]-3, pos[1]-19), 'AntiClock', [self.saw_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
                     
                     # FRUITS--------------------------------#
                     if layer.name in ('AppleTiles'):
@@ -205,6 +241,7 @@ class Level:
         self.entity_sprites.update(dt)
 
         # DRAW METHOD
+        self.saw_sprites.draw(self.display_surface)
         self.visible_sprites.draw(self.display_surface)
 
         # Player
@@ -223,6 +260,7 @@ class Level:
             self.check_arrow()
             self.check_game_stage()
             self.rockhead_sprites.update(dt)
+            self.spikehead_sprites.update(dt)
             player = self.player.sprite
             debug('player_status', player.status, 26)
         elif self.game_state == 'Won':
@@ -232,8 +270,8 @@ class Level:
         elif self.game_state == 'Revive':
             self.recreate_level(self.pos, self.content, self.next_lvl)
         elif self.game_state == 'Next':
-            if self.next_lvl < 9:
-                level = levels[self.next_lvl]
+            if self.next_lvl < 10:
+                level = levels[self.next_lvl-1]
                 self.create_next_level(level['pos'], level['content'], level['next_lvl'])
             else:
                 self.create_overworld(self.pos)
