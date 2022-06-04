@@ -28,6 +28,7 @@ class Level:
 
         # set the sprite group
         self.background_sprite = pygame.sprite.GroupSingle()
+        self.chain_sprites = pygame.sprite.Group()
         self.obstacle_sprites = pygame.sprite.Group()
         self.block_sprites = pygame.sprite.Group()
         self.visible_sprites = pygame.sprite.Group()
@@ -55,6 +56,8 @@ class Level:
         self.dead_sound.set_volume(0.4)
         self.bounce_sound = pygame.mixer.Sound('audio/bounce.wav')
         self.bounce_sound.set_volume(0.4)
+        self.back_sound = pygame.mixer.Sound('audio/selected.wav')
+        self.back_sound.set_volume(0.4)
 
         # setup level
         self.timer_index = 0
@@ -70,6 +73,7 @@ class Level:
             for sprite in self.hitbox_sprites:
                 pygame.draw.rect(self.display_surface, 'red', sprite.hitbox, 1)
         elif keys[pygame.K_BACKSPACE]:
+            self.back_sound.play()
             self.create_overworld(self.pos)
 
     def setup_Enter(self):
@@ -78,7 +82,7 @@ class Level:
 
     def setup_layout(self):
         Background([self.background_sprite])
-        for layer in self.level_data.visible_layers:
+        for layer in self.level_data.layers:
             if hasattr(layer, 'data'):
                 for x, y, surface in layer.tiles():
                     pos = (x*16, y*16)
@@ -90,6 +94,8 @@ class Level:
                         OneWay_Tile(pos, [self.visible_sprites, self.oneway_sprites, self.hitbox_sprites], surface)
                     if layer.name in ('BlockTiles'):
                         Basic_Tile(pos, [self.block_sprites])
+                    if layer.name in ('Chain'):
+                        Basic_Tile((pos[0]-8, pos[1]+8), [self.chain_sprites], surface)
 
                     # PLAYER--------------------------------#
                     if layer.name in ('Player'):
@@ -112,9 +118,8 @@ class Level:
                         Arrow(pos, [self.visible_sprites, self.entity_sprites, self.arrow_sprites, self.hitbox_sprites])
                     
                     # Bounce
-                    
                     if layer.name in ('BounceTiles'):
-                        BouncePlatform((pos[0], pos[1]-12), [self.visible_sprites, self.entity_sprites, self.bounce_platforms, self.hitbox_sprites])
+                        BouncePlatform((pos[0]-6, pos[1]-12), [self.visible_sprites, self.entity_sprites, self.bounce_platforms, self.hitbox_sprites])
                     
                     # Rockhead
                     if layer.name in ('RockHead-H'):
@@ -138,15 +143,15 @@ class Level:
 
                     # Saw
                     if layer.name in ('Saw-Zero'):
-                        Saw((pos[0]-3, pos[1]-19), 'Zero', [self.saw_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
+                        Saw((pos[0]-3, pos[1]-3), 'Zero', [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
                     if layer.name in ('Saw-H'):
-                        Saw((pos[0]-3, pos[1]-19), 'Horizontal', [self.saw_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
+                        Saw((pos[0]-3, pos[1]-3), 'Horizontal', [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
                     if layer.name in ('Saw-V'):
-                        Saw((pos[0]-3, pos[1]-19), 'Vertical', [self.saw_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
+                        Saw((pos[0]-3, pos[1]-3), 'Vertical', [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
                     if layer.name in ('Saw-Clock'):
-                        Saw((pos[0]-3, pos[1]-19), 'Clock', [self.saw_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
+                        Saw((pos[0]-3, pos[1]-3), 'Clock', [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
                     if layer.name in ('Saw-AntiClock'):
-                        Saw((pos[0]-3, pos[1]-19), 'AntiClock', [self.saw_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
+                        Saw((pos[0]-3, pos[1]-3), 'AntiClock', [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
                     
                     # FRUITS--------------------------------#
                     if layer.name in ('AppleTiles'):
@@ -198,7 +203,7 @@ class Level:
             if player.hitbox.colliderect(sprite.hitbox):
                 self.enter_sound.play()
                 Arrow_effect(sprite.rect.topleft, [self.visible_sprites, self.effect_sprites])
-                player.direction.y = -3.2
+                player.direction.y = -3
                 player.double_jump = True
                 sprite.kill()
 
@@ -231,6 +236,7 @@ class Level:
 
         # Background
         self.background_sprite.draw(self.display_surface)
+        self.chain_sprites.draw(self.display_surface)
 
         # UPDATE METHOD
         # Background
@@ -261,6 +267,7 @@ class Level:
             self.check_game_stage()
             self.rockhead_sprites.update(dt)
             self.spikehead_sprites.update(dt)
+            self.saw_sprites.update(dt)
             player = self.player.sprite
             debug('player_status', player.status, 26)
         elif self.game_state == 'Won':
@@ -270,7 +277,7 @@ class Level:
         elif self.game_state == 'Revive':
             self.recreate_level(self.pos, self.content, self.next_lvl)
         elif self.game_state == 'Next':
-            if self.next_lvl < 10:
+            if self.next_lvl <= len(levels):
                 level = levels[self.next_lvl-1]
                 self.create_next_level(level['pos'], level['content'], level['next_lvl'])
             else:

@@ -80,7 +80,7 @@ class Saw(pygame.sprite.Sprite):
         self.type = type
         self.stop = False
         self.stop_time = None
-        self.cooldown_time = 490
+        self.cooldown_time = 510
         self.state = 'Move'
 
         # Movement
@@ -423,7 +423,7 @@ class SpikeHead(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = pygame.image.load('graphics/Traps/SpikeHead/Idle/0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = pygame.Rect(self.rect.x + 11, self.rect.y + 10, 33, 33)
+        self.hitbox = pygame.Rect(self.rect.x + 7, self.rect.y + 6, 41, 41)
         self.pos = pygame.math.Vector2(self.hitbox.topleft)
         self.obstacle_sprites = obstacle_sprites
         self.type = type
@@ -543,8 +543,8 @@ class SpikeHead(pygame.sprite.Sprite):
         self.hitbox.x = round(self.pos.x)
         self.pos.y += self.direction.y * self.speed * dt
         self.hitbox.y = round(self.pos.y)
-        self.rect.x = self.hitbox.x - 11
-        self.rect.y = self.hitbox.y - 10
+        self.rect.x = self.hitbox.x - 7
+        self.rect.y = self.hitbox.y - 6
 
     def cooldown(self):
         current = pygame.time.get_ticks()

@@ -13,6 +13,7 @@ class Game:
         pygame.mixer.set_num_channels(32)
         self.screen = pygame.display.set_mode((scaled_width, scaled_height), pygame.SCALED)
         pygame.display.set_caption('Pixel_Adventure_1')
+        pygame.display.set_icon(pygame.image.load('icon.png').convert_alpha())
         pygame.mouse.set_visible(False)
         self.clock = pygame.time.Clock()
         self.overworld = Overworld((144, 32), self.create_level)
