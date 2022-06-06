@@ -84,15 +84,15 @@ class Saw(pygame.sprite.Sprite):
         self.state = 'Move'
 
         # Movement
-        if self.type == 'Horizontal':
+        if self.type == 'H':
             self.direction = pygame.math.Vector2(1, 0)
-        elif self.type == 'Vertical':
+        elif self.type == 'V':
             self.direction = pygame.math.Vector2(0, 1)
-        elif self.type == 'Clock':
+        elif self.type == 'C':
             self.direction = pygame.math.Vector2(1, 0)
-        elif self.type == 'AntiClock':
+        elif self.type == 'A':
             self.direction = pygame.math.Vector2(-1, 0)
-        elif self.type == 'Zero':
+        elif self.type == 'Z':
             self.direction = pygame.math.Vector2(0, 0)
         self.speed = 80
 
@@ -176,13 +176,13 @@ class Saw(pygame.sprite.Sprite):
                 self.stop = False
 
     def check_type(self):
-        if self.type == 'Horizontal':
+        if self.type == 'H':
             self.horizontal()
-        elif self.type == 'Vertical':
+        elif self.type == 'V':
             self.vertical()
-        elif self.type == 'Clock':
+        elif self.type == 'C':
             self.clock(1)
-        elif self.type == 'AntiClock':
+        elif self.type == 'A':
             self.clock(-1)
 
     def update(self, dt):
@@ -198,7 +198,12 @@ class FallingPlatform(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = pygame.image.load('graphics/Traps/FallingPlatform/Off/0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = pygame.Rect(self.rect.x, self.rect.y, 16, 1)
+        self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+4, 30, 5)
+        self.landbox = pygame.Rect(self.rect.x+5, self.rect.y+2, 22, 4)
+        self.old_hitbox = self.hitbox.copy()
+        self.direction = pygame.math.Vector2(0, 0)
+        self.pos = pygame.math.Vector2(self.hitbox.topleft)
+        self.gravity = 6
 
         # animation
         self.import_assets()
@@ -223,11 +228,19 @@ class FallingPlatform(pygame.sprite.Sprite):
         self.image = animations[int(self.frame_index)]
 
     def apply_gravity(self, dt):
-        self.rect.y += 6 * dt
+        self.direction.y += self.gravity * dt
+        if self.direction.y >= 6.3:
+            self.direction.y = 6.3
+        self.pos.y += self.direction.y
+        self.hitbox.y = round(self.pos.y)
+        self.rect.x = self.hitbox.x - 1
+        self.rect.y = self.hitbox.y - 4
 
     def update(self, dt):
+        self.old_hitbox = self.hitbox.copy()
         self.animate(dt)
-
+        if self.status == 'Off':
+            self.apply_gravity(dt)
 
 class BouncePlatform(pygame.sprite.Sprite):
     def __init__(self, pos, group):
@@ -280,13 +293,13 @@ class RockHead(pygame.sprite.Sprite):
         self.state = 'Move'
 
         # Movement
-        if self.type == 'Horizontal':
+        if self.type == 'H':
             self.direction = pygame.math.Vector2(1, 0)
-        elif self.type == 'Vertical':
+        elif self.type == 'V':
             self.direction = pygame.math.Vector2(0, 1)
-        elif self.type == 'Clock':
+        elif self.type == 'C':
             self.direction = pygame.math.Vector2(1, 0)
-        elif self.type == 'AntiClock':
+        elif self.type == 'A':
             self.direction = pygame.math.Vector2(-1, 0)
         self.speed = 200
 
@@ -298,7 +311,7 @@ class RockHead(pygame.sprite.Sprite):
 
         # Audio
         self.hitsound = pygame.mixer.Sound('audio/headhit.wav')
-        self.hitsound.set_volume(0.4)
+        self.hitsound.set_volume(0.8)
 
     def import_assets(self):
         self.animations = {
@@ -400,13 +413,13 @@ class RockHead(pygame.sprite.Sprite):
                 self.stop = False
 
     def check_type(self):
-        if self.type == 'Horizontal':
+        if self.type == 'H':
             self.horizontal()
-        elif self.type == 'Vertical':
+        elif self.type == 'V':
             self.vertical()
-        elif self.type == 'Clock':
+        elif self.type == 'C':
             self.clock(1)
-        elif self.type == 'AntiClock':
+        elif self.type == 'A':
             self.clock(-1)
 
     def update(self, dt):
@@ -433,13 +446,13 @@ class SpikeHead(pygame.sprite.Sprite):
         self.state = 'Move'
 
         # Movement
-        if self.type == 'Horizontal':
+        if self.type == 'H':
             self.direction = pygame.math.Vector2(1, 0)
-        elif self.type == 'Vertical':
+        elif self.type == 'V':
             self.direction = pygame.math.Vector2(0, 1)
-        elif self.type == 'Clock':
+        elif self.type == 'C':
             self.direction = pygame.math.Vector2(1, 0)
-        elif self.type == 'AntiClock':
+        elif self.type == 'A':
             self.direction = pygame.math.Vector2(-1, 0)
         self.speed = 200
 
@@ -451,7 +464,7 @@ class SpikeHead(pygame.sprite.Sprite):
 
         # Audio
         self.hitsound = pygame.mixer.Sound('audio/headhit.wav')
-        self.hitsound.set_volume(0.4)
+        self.hitsound.set_volume(0.8)
 
     def import_assets(self):
         self.animations = {
@@ -553,13 +566,13 @@ class SpikeHead(pygame.sprite.Sprite):
                 self.stop = False
 
     def check_type(self):
-        if self.type == 'Horizontal':
+        if self.type == 'H':
             self.horizontal()
-        elif self.type == 'Vertical':
+        elif self.type == 'V':
             self.vertical()
-        elif self.type == 'Clock':
+        elif self.type == 'C':
             self.clock(1)
-        elif self.type == 'AntiClock':
+        elif self.type == 'A':
             self.clock(-1)
 
     def update(self, dt):

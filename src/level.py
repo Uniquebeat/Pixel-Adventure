@@ -1,4 +1,3 @@
-from operator import truediv
 import pygame
 from pytmx.util_pygame import load_pygame
 from src.setting import *
@@ -42,6 +41,7 @@ class Level:
         self.rockhead_sprites = pygame.sprite.Group()
         self.spikehead_sprites = pygame.sprite.Group()
         self.arrow_sprites = pygame.sprite.Group()
+        self.falling_sprites = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.hitbox_sprites = pygame.sprite.Group()
         
@@ -95,13 +95,7 @@ class Level:
                     if layer.name in ('BlockTiles'):
                         Basic_Tile(pos, [self.block_sprites])
                     if layer.name in ('Chain'):
-                        Basic_Tile((pos[0]-8, pos[1]+8), [self.chain_sprites], surface)
-
-                    # PLAYER--------------------------------#
-                    if layer.name in ('Player'):
-                        self.player_pos = pos
-
-                    # OBJECTS-------------------------------#
+                        Basic_Tile((pos[0], pos[1]), [self.chain_sprites], surface)
 
                     # Spikes
                     if layer.name in ('SpikeTilesBottom'):
@@ -112,59 +106,26 @@ class Level:
                         Spike_Tile((pos[0], pos[1]), 'right', [self.visible_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
                     if layer.name in ('SpikeTilesLeft'):
                         Spike_Tile((pos[0], pos[1]), 'left', [self.visible_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites], surface)
-
-                    # Arrow
-                    if layer.name in ('ArrowTiles'):
-                        Arrow(pos, [self.visible_sprites, self.entity_sprites, self.arrow_sprites, self.hitbox_sprites])
                     
-                    # Bounce
-                    if layer.name in ('BounceTiles'):
-                        BouncePlatform((pos[0]-6, pos[1]-12), [self.visible_sprites, self.entity_sprites, self.bounce_platforms, self.hitbox_sprites])
-                    
-                    # Rockhead
-                    if layer.name in ('RockHead-H'):
-                        RockHead((pos[0]-5, pos[1]-21), 'Horizontal', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
-                    if layer.name in ('RockHead-V'):
-                        RockHead((pos[0]-5, pos[1]-21), 'Vertical', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
-                    if layer.name in ('RockHead-C'):
-                        RockHead((pos[0]-5, pos[1]-21), 'Clock', [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
-                    if layer.name in ('RockHead-A'):
-                        RockHead((pos[0]-5, pos[1]-21), 'AntiClock', [self.visible_sprites, self.rockhead_sprites], self.obstacle_sprites)
-
-                    # Spikehead
-                    if layer.name in ('SpikeHead-H'):
-                        SpikeHead((pos[0]-11, pos[1]-26), 'Horizontal', [self.visible_sprites, self.damageable_sprites, self.spikehead_sprites, self.hitbox_sprites], self.obstacle_sprites)
-                    if layer.name in ('SpikeHead-V'):
-                        SpikeHead((pos[0]-11, pos[1]-26), 'Vertical', [self.visible_sprites, self.damageable_sprites, self.spikehead_sprites, self.hitbox_sprites], self.obstacle_sprites)
-                    if layer.name in ('SpikeHead-C'):
-                        SpikeHead((pos[0]-11, pos[1]-26), 'Clock', [self.visible_sprites, self.damageable_sprites, self.spikehead_sprites, self.hitbox_sprites], self.obstacle_sprites)
-                    if layer.name in ('SpikeHead-A'):
-                        SpikeHead((pos[0]-11, pos[1]-26), 'AntiClock', [self.visible_sprites, self.damageable_sprites, self.spikehead_sprites, self.hitbox_sprites], self.obstacle_sprites)
-
-                    # Saw
-                    if layer.name in ('Saw-Zero'):
-                        Saw((pos[0]-3, pos[1]-3), 'Zero', [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
-                    if layer.name in ('Saw-H'):
-                        Saw((pos[0]-3, pos[1]-3), 'Horizontal', [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
-                    if layer.name in ('Saw-V'):
-                        Saw((pos[0]-3, pos[1]-3), 'Vertical', [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
-                    if layer.name in ('Saw-Clock'):
-                        Saw((pos[0]-3, pos[1]-3), 'Clock', [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
-                    if layer.name in ('Saw-AntiClock'):
-                        Saw((pos[0]-3, pos[1]-3), 'AntiClock', [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
-                    
-                    # FRUITS--------------------------------#
-                    if layer.name in ('AppleTiles'):
-                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.entity_sprites, self.collectable_sprites, self.hitbox_sprites], 'Apple')
-                    if layer.name in ('CherryTiles'):
-                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.entity_sprites, self.collectable_sprites, self.hitbox_sprites], 'Cherry')
-                    if layer.name in ('MelonTiles'):
-                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.entity_sprites, self.collectable_sprites, self.hitbox_sprites], 'Melon')
-                    if layer.name in ('PineappleTiles'):
-                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.entity_sprites, self.collectable_sprites, self.hitbox_sprites], 'Pineapple')
-                    if layer.name in ('StrawberryTiles'):
-                        CollectableFruit((pos[0], pos[1]-16), [self.visible_sprites, self.entity_sprites, self.collectable_sprites, self.hitbox_sprites], 'Strawberry')
-        
+        for obj in self.level_data.objects:
+            if obj.name in ('Player'):
+                self.player_pos = (obj.x+16, obj.y+16)
+            if obj.name in ('Fruits'):
+                CollectableFruit((obj.x, obj.y), [self.visible_sprites, self.entity_sprites, self.collectable_sprites, self.hitbox_sprites], obj.type)
+            if obj.name in ('Traps'):
+                if obj.type in ('Arrow'):
+                    Arrow((obj.x, obj.y), [self.visible_sprites, self.entity_sprites, self.arrow_sprites, self.hitbox_sprites])
+                if obj.type in ('Bounce'):
+                    BouncePlatform((obj.x, obj.y), [self.visible_sprites, self.entity_sprites, self.bounce_platforms, self.hitbox_sprites])
+                if obj.type in ('Falling'):
+                    FallingPlatform((obj.x, obj.y), [self.visible_sprites, self.entity_sprites, self.falling_sprites, self.obstacle_sprites, self.hitbox_sprites])
+            if obj.name in ('RockHead'):
+                RockHead((obj.x, obj.y), obj.type, [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
+            if obj.name in ('SpikeHead'):
+                SpikeHead((obj.x, obj.y), obj.type, [self.visible_sprites, self.damageable_sprites, self.spikehead_sprites,self.hitbox_sprites], self.obstacle_sprites)
+            if obj.name in ('Saw'):
+                Saw((obj.x, obj.y), obj.type, [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
+       
     def create_player(self):
         Player(self.player_pos, [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.rockhead_sprites, self.create_dead_effect)
 
@@ -206,6 +167,13 @@ class Level:
                 player.direction.y = -3
                 player.double_jump = True
                 sprite.kill()
+
+    def check_falling(self):
+        player = self.player.sprite
+        for sprite in self.falling_sprites.sprites():
+            if player.hitbox.colliderect(sprite.landbox):
+                sprite.status = 'Off'
+                player.double_jump = True
 
     def check_game_stage(self):
         player = self.player.sprite
@@ -264,6 +232,7 @@ class Level:
             self.check_damage()
             self.check_bounce()
             self.check_arrow()
+            self.check_falling()
             self.check_game_stage()
             self.rockhead_sprites.update(dt)
             self.spikehead_sprites.update(dt)
