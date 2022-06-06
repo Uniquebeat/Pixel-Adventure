@@ -2,6 +2,7 @@ import pygame, sys, time
 from src.setting import *
 from src.level import Level
 from src.overworld import Overworld
+from src.titlescreen import Titlescreen
 from src.debug import debug
 from src.game_data import *
 
@@ -16,8 +17,12 @@ class Game:
         pygame.display.set_icon(pygame.image.load('icon.png').convert_alpha())
         pygame.mouse.set_visible(False)
         self.clock = pygame.time.Clock()
-        self.overworld = Overworld((144, 32), self.create_level)
-        self.status = 'Overworld'
+        self.titlescreen = Titlescreen(self.create_level, self.create_overworld)
+        self.status = 'Titlescreen'
+
+        # Images
+        self.back_img = pygame.image.load('graphics/Overworld/back.png').convert_alpha()
+        self.play_img = pygame.image.load('graphics/Overworld/play.png').convert_alpha()
 
     def create_level(self, node):
         self.level = Level(node.content, node.pos, node.next_lvl, self.create_overworld, self.recreate_level, self.create_next_level)
@@ -30,8 +35,12 @@ class Game:
         self.level = Level(content, pos, next_lvl, self.create_overworld, self.recreate_level, self.create_next_level)
 
     def create_overworld(self, pos):
-        self.overworld = Overworld(pos, self.create_level)
+        self.overworld = Overworld(pos, self.create_level, self.create_titlescreen)
         self.status = 'Overworld'
+
+    def create_titlescreen(self):
+        Titlescreen(self.create_level, self.create_overworld)
+        self.status = 'Titlescreen'
 
     def run(self):
         prev_time = time.time()
@@ -50,8 +59,13 @@ class Game:
                         pygame.display.toggle_fullscreen()
 
             self.screen.fill((33, 31, 48))
-            if self.status == 'Overworld':
+            if self.status == 'Titlescreen':
+                self.titlescreen.run(dt)
+                self.screen.blit(self.play_img, (553, 16))
+            elif self.status == 'Overworld':
                 self.overworld.run(dt)
+                self.screen.blit(self.back_img, (16, 16))
+                self.screen.blit(self.play_img, (553, 16))
             elif self.status == 'Level':
                 self.level.run(dt)
             debug('FPS', int(self.clock.get_fps()), 34)

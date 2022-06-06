@@ -1,3 +1,4 @@
+from pickle import TRUE
 import pygame
 from pytmx.util_pygame import load_pygame
 from src.setting import *
@@ -23,7 +24,7 @@ class Level:
         self.content = content
         self.level_data = load_pygame(self.content)
         self.visible = False
-        self.sounded = False
+        self.pressed = False
 
         # set the sprite group
         self.background_sprite = pygame.sprite.GroupSingle()
@@ -73,8 +74,12 @@ class Level:
             for sprite in self.hitbox_sprites:
                 pygame.draw.rect(self.display_surface, 'red', sprite.hitbox, 1)
         elif keys[pygame.K_BACKSPACE]:
-            self.back_sound.play()
-            self.create_overworld(self.pos)
+            if not self.pressed:
+                self.pressed = True
+                self.back_sound.play()
+                self.create_overworld(self.pos)
+        elif self.pressed:
+            self.pressed = False
 
     def setup_Enter(self):
         self.enter_sound.play()
