@@ -25,7 +25,7 @@ class Titlescreen:
 
         # audio
         self.selected_sound = pygame.mixer.Sound('audio/selected.wav')
-        self.selected_sound.set_volume(0.4)
+        self.selected_sound.set_volume(0.6)
 
     def load(self):
         Background([self.background_sprite])

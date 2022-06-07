@@ -43,7 +43,7 @@ class Player(pygame.sprite.Sprite):
 
         # Audio
         self.jump_sound = pygame.mixer.Sound('audio/jump.wav')
-        self.jump_sound.set_volume(0.4)
+        self.jump_sound.set_volume(0.6)
 
 
     def import_character_assets(self):
@@ -160,7 +160,7 @@ class Player(pygame.sprite.Sprite):
                         self.pos.y = self.hitbox.y
                         self.direction.y = 0
 
-            if self.on_ground and self.direction.y < 0 or self.direction.y > 0.6:
+            if self.on_ground and self.direction.y < 0 or self.direction.y > 1.8:
                 self.on_ground = False
 
     def oneway_collision(self):
@@ -234,7 +234,8 @@ class Player(pygame.sprite.Sprite):
 
     def jump(self):
         self.direction.y = self.jumpforce
-        self.jump_sound.play()
+        if self.status != 'Hurt':
+            self.jump_sound.play()
 
     def wall_jump(self):
         self.direction.x *= -8

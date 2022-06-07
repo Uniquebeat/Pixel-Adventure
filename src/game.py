@@ -39,7 +39,7 @@ class Game:
         self.status = 'Overworld'
 
     def create_titlescreen(self):
-        Titlescreen(self.create_level, self.create_overworld)
+        self.titlescreen = Titlescreen(self.create_level, self.create_overworld)
         self.status = 'Titlescreen'
 
     def run(self):

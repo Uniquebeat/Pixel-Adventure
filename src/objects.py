@@ -198,7 +198,7 @@ class FallingPlatform(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = pygame.image.load('graphics/Traps/FallingPlatform/Off/0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+4, 30, 5)
+        self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+4, 30, 4)
         self.landbox = pygame.Rect(self.rect.x+5, self.rect.y+2, 22, 4)
         self.old_hitbox = self.hitbox.copy()
         self.direction = pygame.math.Vector2(0, 0)

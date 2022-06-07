@@ -26,7 +26,7 @@ class Select(pygame.sprite.Sprite):
         self.direction = pygame.math.Vector2()
         self.pos = pygame.math.Vector2(self.rect.topleft)
         self.select_sound = pygame.mixer.Sound('audio/select.wav')
-        self.select_sound.set_volume(0.4)
+        self.select_sound.set_volume(0.6)
 
     def get_input(self):
         keys = pygame.key.get_pressed()
@@ -88,9 +88,9 @@ class Overworld:
         self.select_sprite = pygame.sprite.GroupSingle()
         self.setup()
         self.selected_sound = pygame.mixer.Sound('audio/selected.wav')
-        self.selected_sound.set_volume(0.4)
+        self.selected_sound.set_volume(0.6)
         self.delay = pygame.time.get_ticks()
-        self.cooldown = 800
+        self.cooldown = 400
 
     def setup(self):
         Background([self.background_sprite])

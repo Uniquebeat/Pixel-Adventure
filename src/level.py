@@ -48,17 +48,17 @@ class Level:
         
         # audio
         self.enter_sound = pygame.mixer.Sound('audio/enter.wav')
-        self.enter_sound.set_volume(0.4)
+        self.enter_sound.set_volume(0.6)
         self.collect_sound = pygame.mixer.Sound('audio/collect.wav')
-        self.collect_sound.set_volume(0.4)
+        self.collect_sound.set_volume(0.6)
         self.hurt_sound = pygame.mixer.Sound('audio/hurt.wav')
-        self.hurt_sound.set_volume(0.4)
+        self.hurt_sound.set_volume(0.6)
         self.dead_sound = pygame.mixer.Sound('audio/dead.wav')
-        self.dead_sound.set_volume(0.4)
+        self.dead_sound.set_volume(0.6)
         self.bounce_sound = pygame.mixer.Sound('audio/bounce.wav')
-        self.bounce_sound.set_volume(0.4)
+        self.bounce_sound.set_volume(0.6)
         self.back_sound = pygame.mixer.Sound('audio/selected.wav')
-        self.back_sound.set_volume(0.4)
+        self.back_sound.set_volume(0.6)
 
         # setup level
         self.timer_index = 0
