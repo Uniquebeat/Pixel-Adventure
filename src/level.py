@@ -49,8 +49,6 @@ class Level:
         # audio
         self.enter_sound = pygame.mixer.Sound('audio/enter.wav')
         self.enter_sound.set_volume(0.6)
-        self.collect_sound = pygame.mixer.Sound('audio/collect.wav')
-        self.collect_sound.set_volume(0.6)
         self.hurt_sound = pygame.mixer.Sound('audio/hurt.wav')
         self.hurt_sound.set_volume(0.6)
         self.dead_sound = pygame.mixer.Sound('audio/dead.wav')
@@ -143,7 +141,7 @@ class Level:
         player = self.player.sprite
         for sprite in self.collectable_sprites.sprites():
             if sprite.hitbox.colliderect(player.hitbox):
-                self.collect_sound.play()
+                sprite.collect_sound.play()
                 Collect_effect(sprite.rect.topleft, [self.effect_sprites, self.visible_sprites])
                 sprite.remove()
                 sprite.kill()

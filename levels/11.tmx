@@ -62,10 +62,10 @@
   <object id="1" name="Player" gid="243" x="32" y="304" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="17" name="Traps">
-  <object id="32" name="Traps" type="Arrow" gid="245" x="48" y="256" width="18" height="18"/>
-  <object id="33" name="Traps" type="Arrow" gid="245" x="32" y="208" width="18" height="18"/>
-  <object id="34" name="Traps" type="Arrow" gid="245" x="48" y="160" width="18" height="18"/>
-  <object id="35" name="Traps" type="Arrow" gid="245" x="32" y="112" width="18" height="18"/>
+  <object id="32" name="Traps" type="Arrow" gid="245" x="48" y="258" width="18" height="18"/>
+  <object id="33" name="Traps" type="Arrow" gid="245" x="32" y="210" width="18" height="18"/>
+  <object id="34" name="Traps" type="Arrow" gid="245" x="48" y="162" width="18" height="18"/>
+  <object id="35" name="Traps" type="Arrow" gid="245" x="32" y="114" width="18" height="18"/>
   <object id="36" name="Traps" type="Arrow" gid="245" x="352" y="224" width="18" height="18"/>
   <object id="37" name="Traps" type="Arrow" gid="245" x="448" y="160" width="18" height="18"/>
   <object id="38" name="Traps" type="Arrow" gid="245" x="544" y="128" width="18" height="18"/>

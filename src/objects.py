@@ -48,6 +48,8 @@ class CollectableFruit(pygame.sprite.Sprite):
         self.import_assets()
         self.frame_index = 0
         self.animation_speed = 18
+        self.collect_sound = pygame.mixer.Sound('audio/collect.wav')
+        self.collect_sound.set_volume(0.6)
 
     def import_assets(self):
         self.animations = {
@@ -198,8 +200,8 @@ class FallingPlatform(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = pygame.image.load('graphics/Traps/FallingPlatform/Off/0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+4, 30, 4)
-        self.landbox = pygame.Rect(self.rect.x+5, self.rect.y+2, 22, 4)
+        self.hitbox = pygame.Rect(self.rect.x+1, self.rect.y+4, 30, 1)
+        self.landbox = pygame.Rect(self.rect.x+5, self.rect.y+2, 22, 1)
         self.old_hitbox = self.hitbox.copy()
         self.direction = pygame.math.Vector2(0, 0)
         self.pos = pygame.math.Vector2(self.hitbox.topleft)

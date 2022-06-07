@@ -160,7 +160,7 @@ class Player(pygame.sprite.Sprite):
                         self.pos.y = self.hitbox.y
                         self.direction.y = 0
 
-            if self.on_ground and self.direction.y < 0 or self.direction.y > 1.8:
+            if self.on_ground and self.direction.y < 0 or self.direction.y > 0.6:
                 self.on_ground = False
 
     def oneway_collision(self):
