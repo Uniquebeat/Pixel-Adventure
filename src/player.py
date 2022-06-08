@@ -1,4 +1,3 @@
-from pickle import TRUE
 import pygame
 from src.support import import_folder
 

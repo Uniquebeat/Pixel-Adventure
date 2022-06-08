@@ -1,4 +1,3 @@
-from re import L
 import pygame
 from src.overworld import Select, Node
 from src.objects import Basic_Tile

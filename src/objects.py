@@ -1,4 +1,3 @@
-from pickle import FALSE
 import pygame
 from src.setting import tile_size
 from src.support import import_folder
