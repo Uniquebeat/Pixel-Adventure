@@ -42,6 +42,7 @@ class Level:
         self.spikehead_sprites = pygame.sprite.Group()
         self.arrow_sprites = pygame.sprite.Group()
         self.falling_sprites = pygame.sprite.Group()
+        self.fire_sprites = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.hitbox_sprites = pygame.sprite.Group()
         
@@ -121,6 +122,8 @@ class Level:
                     BouncePlatform((obj.x, obj.y), [self.visible_sprites, self.entity_sprites, self.bounce_platforms, self.hitbox_sprites])
                 if obj.type in ('Falling'):
                     FallingPlatform((obj.x, obj.y), [self.visible_sprites, self.entity_sprites, self.falling_sprites, self.obstacle_sprites, self.hitbox_sprites])
+                if obj.type in ('Fire'):
+                    FirePlatform((obj.x, obj.y), [self.entity_sprites, self.fire_sprites, self.obstacle_sprites, self.hitbox_sprites], self.create_fire)
             if obj.name in ('RockHead'):
                 RockHead((obj.x, obj.y), obj.type, [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
             if obj.name in ('SpikeHead'):
@@ -136,46 +139,61 @@ class Level:
         self.dead_sound.play()
         Player_effect(player.rect.center, 'Dead', [self.effect_sprites, self.visible_sprites], self.create_player)
 
+    def create_fire(self, pos):
+        Fire((pos[0]+3, pos[1]+3), [self.damageable_sprites, self.entity_sprites, self.hitbox_sprites])
+
     def check_collect(self):
-        player = self.player.sprite
-        for sprite in self.collectable_sprites.sprites():
-            if sprite.hitbox.colliderect(player.hitbox):
-                sprite.collect_sound.play()
-                Collect_effect(sprite.rect.topleft, [self.effect_sprites, self.visible_sprites])
-                sprite.remove()
-                sprite.kill()
+        if self.collectable_sprites:
+            player = self.player.sprite
+            for sprite in self.collectable_sprites.sprites():
+                if sprite.hitbox.colliderect(player.hitbox):
+                    sprite.collect_sound.play()
+                    Collect_effect(sprite.rect.topleft, [self.effect_sprites, self.visible_sprites])
+                    sprite.remove()
+                    sprite.kill()
 
     def check_damage(self):
-        player = self.player.sprite
-        for sprite in self.damageable_sprites.sprites():
-            if player.hitbox.colliderect(sprite.hitbox):
-                player.status = 'Hurt'
+        if self.damageable_sprites:
+            player = self.player.sprite
+            for sprite in self.damageable_sprites.sprites():
+                if player.hitbox.colliderect(sprite.hitbox):
+                    player.status = 'Hurt'
 
     def check_bounce(self):
-        player = self.player.sprite
-        for sprite in self.bounce_platforms.sprites():
-            if player.hitbox.colliderect(sprite.hitbox):
-                sprite.status = 'Hit'
-                self.bounce_sound.play()
-                player.direction.y = -3.8
-                player.double_jump = True
+        if self.bounce_platforms:
+            player = self.player.sprite
+            for sprite in self.bounce_platforms.sprites():
+                if player.hitbox.colliderect(sprite.hitbox):
+                    sprite.status = 'Hit'
+                    self.bounce_sound.play()
+                    player.direction.y = -3.8
+                    player.double_jump = True
 
     def check_arrow(self):
-        player = self.player.sprite
-        for sprite in self.arrow_sprites.sprites():
-            if player.hitbox.colliderect(sprite.hitbox):
-                self.enter_sound.play()
-                Arrow_effect(sprite.rect.topleft, [self.visible_sprites, self.effect_sprites])
-                player.direction.y = -3
-                player.double_jump = True
-                sprite.kill()
+        if self.arrow_sprites:
+            player = self.player.sprite
+            for sprite in self.arrow_sprites.sprites():
+                if player.hitbox.colliderect(sprite.hitbox):
+                    self.enter_sound.play()
+                    Arrow_effect(sprite.rect.topleft, [self.visible_sprites, self.effect_sprites])
+                    player.direction.y = -3
+                    player.double_jump = True
+                    sprite.kill()
 
     def check_falling(self):
-        player = self.player.sprite
-        for sprite in self.falling_sprites.sprites():
-            if player.hitbox.colliderect(sprite.landbox):
-                sprite.status = 'Off'
-                player.double_jump = True
+        if self.falling_sprites:
+            player = self.player.sprite
+            for sprite in self.falling_sprites.sprites():
+                if player.hitbox.colliderect(sprite.landbox):
+                    sprite.status = 'Off'
+                    player.double_jump = True
+
+    def check_fire(self):
+        if self.fire_sprites:
+            player = self.player.sprite
+            for sprite in self.fire_sprites.sprites():
+                if player.hitbox.colliderect(sprite.landbox) and sprite.status == 'Off':
+                    sprite.status = 'Hit'
 
     def check_game_stage(self):
         player = self.player.sprite
@@ -225,6 +243,10 @@ class Level:
             self.player.update(dt)
             self.player.draw(self.display_surface)
 
+        # Fire
+
+        self.fire_sprites.draw(self.display_surface)
+
         # Checks
         self.get_hitbox_visible()
         if self.game_state == 'Start':
@@ -236,6 +258,7 @@ class Level:
             self.check_arrow()
             self.check_falling()
             self.check_game_stage()
+            self.check_fire()
             self.rockhead_sprites.update(dt)
             self.spikehead_sprites.update(dt)
             self.saw_sprites.update(dt)

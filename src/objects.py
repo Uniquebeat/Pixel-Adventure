@@ -605,3 +605,67 @@ class Arrow(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.animate(dt)
+
+
+class FirePlatform(pygame.sprite.Sprite):
+    def __init__(self, pos, groups, create_fire):
+        super().__init__(groups)
+        self.image = pygame.image.load('graphics/Traps/Fire/Off/0.png').convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos)
+        self.hitbox = pygame.Rect(self.rect.x, self.rect.y+16, 16, 16)
+        self.old_hitbox = self.hitbox.copy()
+        self.landbox = pygame.Rect(self.rect.x+4, self.rect.y+14, 8, 4)
+        self.create_fire = create_fire
+
+        # Animatino
+        self.import_assets()
+        self.status = 'Off'
+        self.frame_index = 0
+        self.animation_speed = 14
+        self.turn = 0
+
+    def import_assets(self):
+        self.animations = {
+            'Off':[], 'On':[], 'Hit':[]
+        }
+        path = 'graphics/Traps/Fire'
+        for animation in self.animations.keys():
+            full_path = path + '/' + animation
+            self.animations[animation] = import_folder(full_path)
+
+    def animate(self, dt):
+        animations = self.animations[self.status]
+        self.frame_index += self.animation_speed * dt
+        if self.frame_index >= len(animations) and self.status == 'Off':
+            self.frame_index = 0
+        elif self.frame_index >= len(animations) and self.status == 'Hit':
+            self.frame_index = 0
+            self.status = 'On'
+            self.create_fire(self.rect.topleft)
+        elif self.frame_index >= len(animations) and self.status == 'On':
+            self.frame_index = 0
+            self.turn += 1
+            if self.turn > 2:
+                self.status = 'Off'
+        self.image = animations[int(self.frame_index)]
+
+    def update(self, dt):
+        self.old_hitbox = self.hitbox.copy()
+        if self.status == 'Off':
+            self.turn = 0
+        self.animate(dt)
+
+
+class Fire(pygame.sprite.Sprite):
+    def __init__(self, pos, groups):
+        super().__init__(groups)
+        self.image = pygame.Surface((10, 13))
+        self.rect = self.image.get_rect(topleft=pos)
+        self.hitbox = self.rect
+        self.index = 0
+        self.speed = 14
+
+    def update(self, dt):
+        self.index += self.speed * dt
+        if self.index >= 5:
+            self.kill()
