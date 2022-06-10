@@ -110,7 +110,7 @@ class Overworld:
 
         if keys[pygame.K_BACKSPACE]:
             self.selected_sound.play()
-            self.create_titlescreen()
+            self.create_titlescreen((299, 176))
 
     def timer(self):
         current = pygame.time.get_ticks()

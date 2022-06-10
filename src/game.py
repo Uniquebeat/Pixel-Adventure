@@ -3,6 +3,8 @@ from src.setting import *
 from src.level import Level
 from src.overworld import Overworld
 from src.titlescreen import Titlescreen
+from src.helpscreen import Helpscreen
+from src.infoscreen import Infoscreen
 from src.debug import debug
 from src.game_data import *
 
@@ -17,7 +19,7 @@ class Game:
         pygame.display.set_icon(pygame.image.load('icon.png').convert_alpha())
         pygame.mouse.set_visible(False)
         self.clock = pygame.time.Clock()
-        self.titlescreen = Titlescreen(self.create_level, self.create_overworld)
+        self.titlescreen = Titlescreen((299,112) ,self.create_level, self.create_overworld, self.create_helpscreen, self.create_infoscreen)
         self.status = 'Titlescreen'
 
         # Images
@@ -38,8 +40,16 @@ class Game:
         self.overworld = Overworld(pos, self.create_level, self.create_titlescreen)
         self.status = 'Overworld'
 
-    def create_titlescreen(self):
-        self.titlescreen = Titlescreen(self.create_level, self.create_overworld)
+    def create_helpscreen(self):
+        self.helpscreen = Helpscreen(self.create_titlescreen)
+        self.status = 'Helpscreen'
+
+    def create_infoscreen(self):
+        self.infoscreen = Infoscreen(self.create_titlescreen)
+        self.status = 'Infoscreen'
+
+    def create_titlescreen(self, pos):
+        self.titlescreen = Titlescreen(pos, self.create_level, self.create_overworld, self.create_helpscreen, self.create_infoscreen)
         self.status = 'Titlescreen'
 
     def run(self):
@@ -62,6 +72,12 @@ class Game:
             if self.status == 'Titlescreen':
                 self.titlescreen.run(dt)
                 self.screen.blit(self.play_img, (553, 16))
+            elif self.status == 'Helpscreen':
+                self.helpscreen.run(dt)
+                self.screen.blit(self.back_img, (16, 16))
+            elif self.status == 'Infoscreen':
+                self.infoscreen.run(dt)
+                self.screen.blit(self.back_img, (16, 16))
             elif self.status == 'Overworld':
                 self.overworld.run(dt)
                 self.screen.blit(self.back_img, (16, 16))
