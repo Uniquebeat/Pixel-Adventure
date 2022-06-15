@@ -145,6 +145,12 @@
   <object id="4" name="Traps" type="Falling" gid="253" x="584.5" y="335" width="32" height="14"/>
   <object id="31" name="Traps" type="Falling" gid="253" x="240" y="320" width="32" height="14"/>
  </objectgroup>
+ <objectgroup id="5" name="Player">
+  <object id="6" name="Player" gid="255" x="64" y="128" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup id="7" name="Saw">
+  <object id="7" name="Saw" type="H" gid="250" x="463" y="132" width="38" height="38"/>
+ </objectgroup>
  <objectgroup id="8" name="Fruits">
   <object id="8" name="Fruits" type="Melon" gid="258" x="144" y="160" width="32" height="32"/>
   <object id="9" name="Fruits" type="Melon" gid="258" x="160" y="128" width="32" height="32"/>
@@ -167,11 +173,5 @@
   <object id="27" name="Fruits" type="Melon" gid="258" x="512" y="320" width="32" height="32"/>
   <object id="32" name="Fruits" type="Melon" gid="258" x="240" y="304" width="32" height="32"/>
   <object id="28" name="Fruits" type="Melon" gid="258" x="544" y="304" width="32" height="32"/>
- </objectgroup>
- <objectgroup id="5" name="Player">
-  <object id="6" name="Player" gid="255" x="64" y="128" width="32" height="32"/>
- </objectgroup>
- <objectgroup id="7" name="Saw">
-  <object id="7" name="Saw" type="H" gid="250" x="463" y="132" width="38" height="38"/>
  </objectgroup>
 </map>

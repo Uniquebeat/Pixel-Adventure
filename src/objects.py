@@ -1,4 +1,4 @@
-import pygame
+import pygame, math
 from src.setting import tile_size
 from src.support import import_folder
 
@@ -95,7 +95,7 @@ class Saw(pygame.sprite.Sprite):
             self.direction = pygame.math.Vector2(-1, 0)
         elif self.type == 'Z':
             self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 80
+        self.speed = 110
 
         # Animation
         self.frames = import_folder('graphics/Traps/Saw')
@@ -443,7 +443,7 @@ class SpikeHead(pygame.sprite.Sprite):
         self.type = type
         self.stop = False
         self.stop_time = None
-        self.cooldown_time = 390
+        self.cooldown_time = 380
         self.state = 'Move'
 
         # Movement
@@ -621,7 +621,7 @@ class FirePlatform(pygame.sprite.Sprite):
         self.import_assets()
         self.status = 'Off'
         self.frame_index = 0
-        self.animation_speed = 14
+        self.animation_speed = 12
         self.turn = 0
 
     def import_assets(self):
@@ -663,9 +663,77 @@ class Fire(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect
         self.index = 0
-        self.speed = 14
+        self.speed = 12
 
     def update(self, dt):
         self.index += self.speed * dt
         if self.index >= 5:
             self.kill()
+
+
+class SpikeBall(pygame.sprite.Sprite):
+    def __init__(self, center, radius, type, groups):
+        super().__init__(groups)
+        self.image = pygame.image.load('graphics/Traps/SpikeBall/spikeball.png').convert_alpha()
+        self.type = type
+        self.radius = radius
+        self.center = pygame.math.Vector2(center, center)
+        self.rect = self.image.get_rect(topleft=(self.radius, self.radius))
+        self.hitbox = pygame.Rect(self.rect.x+2, self.rect.y+2, 23, 23)
+        self.angle = 0
+
+    def move(self, dt):
+        self.hitbox.x = self.radius * math.cos(self.angle) + self.center.x -5
+        self.hitbox.y = self.radius * math.sin(self.angle) + self.center.y -5
+        if self.type == 'C':
+            self.angle += 2 * dt
+        elif self.type == 'A':
+            self.angle -= 2 * dt
+        self.rect.x = self.hitbox.x - 2
+        self.rect.y = self.hitbox.y - 2
+
+    def update(self, dt):
+        self.move(dt)
+
+
+class Chain(pygame.sprite.Sprite):
+    def __init__(self, center, radius, type, groups):
+        super().__init__(groups)
+        self.image = pygame.image.load('graphics/Traps/SpikeBall/Chain.png').convert_alpha()
+        self.type = type
+        self.radius = radius
+        self.center = pygame.math.Vector2(center, center)
+        self.rect = self.image.get_rect(topleft=(self.radius, self.radius))
+        self.hitbox = self.rect
+        self.angle = 0
+
+    def move(self, dt):
+        self.hitbox.x = self.radius * math.cos(self.angle) + self.center.x + 4
+        self.hitbox.y = self.radius * math.sin(self.angle) + self.center.y + 4
+        if self.type == 'C':
+            self.angle += 2 * dt
+        elif self.type == 'A':
+            self.angle -= 2 * dt
+        self.rect.topleft =self.hitbox.topleft
+
+    def update(self, dt):
+        self.move(dt)
+
+
+class SpikeCenter(pygame.sprite.Sprite):
+    def __init__(self, pos, radius, type, groups, create_ball, create_chain):
+        super().__init__(groups)
+        self.image = pygame.Surface((16, 16))
+        self.rect = self.image.get_rect(topleft=pos)
+        self.radius = radius
+        self.type = type
+        self.create_ball = create_ball
+        self.create_chain = create_chain
+        self.setup()
+
+    def setup(self):
+        radius = self.radius
+        while radius > 0:
+            radius -= 8
+            self.create_chain(self.rect.topleft, radius, self.type)
+        self.create_ball(self.rect.topleft, self.radius, self.type)

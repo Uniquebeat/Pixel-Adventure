@@ -25,6 +25,7 @@ class Game:
         # Images
         self.back_img = pygame.image.load('graphics/Overworld/back.png').convert_alpha()
         self.play_img = pygame.image.load('graphics/Overworld/play.png').convert_alpha()
+        self.exit_img = pygame.image.load('graphics/Overworld/exit.png').convert_alpha()
 
     def create_level(self, node):
         self.level = Level(node.content, node.pos, node.next_lvl, self.create_overworld, self.recreate_level, self.create_next_level)
@@ -71,6 +72,7 @@ class Game:
             self.screen.fill((33, 31, 48))
             if self.status == 'Titlescreen':
                 self.titlescreen.run(dt)
+                self.screen.blit(self.exit_img, (16, 16))
                 self.screen.blit(self.play_img, (553, 16))
             elif self.status == 'Helpscreen':
                 self.helpscreen.run(dt)

@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="TileSets/Terrain (16x16).tsx"/>
  <tileset firstgid="243" source="TileSets/Player.tsx"/>
  <tileset firstgid="244" source="TileSets/DamageTiles.tsx"/>
- <tileset firstgid="255" source="TileSets/Fruits.tsx"/>
+ <tileset firstgid="256" source="TileSets/Fruits.tsx"/>
  <layer id="1" name="StaticTiles" width="40" height="23">
   <data encoding="csv">
 200,200,180,222,222,222,222,222,222,222,222,222,223,23,24,24,24,24,24,24,24,4,47,134,134,134,134,134,134,134,134,134,134,134,45,46,47,45,5,25,
@@ -74,32 +74,6 @@
   <object id="26" name="Saw" type="H" gid="251" x="101.182" y="180" width="38" height="38"/>
   <object id="28" name="Saw" type="V" gid="251" x="373.625" y="95.125" width="38" height="38"/>
   <object id="29" name="Saw" type="V" gid="251" x="502.045" y="157.348" width="38" height="38"/>
- </objectgroup>
- <objectgroup id="15" name="Fruits">
-  <object id="2" name="Fruits" type="Apple" gid="255" x="80" y="160" width="32" height="32"/>
-  <object id="3" name="Fruits" type="Apple" gid="255" x="80" y="128" width="32" height="32"/>
-  <object id="4" name="Fruits" type="Apple" gid="255" x="112" y="128" width="32" height="32"/>
-  <object id="5" name="Fruits" type="Apple" gid="255" x="96" y="144" width="32" height="32"/>
-  <object id="6" name="Fruits" type="Apple" gid="255" x="112" y="160" width="32" height="32"/>
-  <object id="7" name="Fruits" type="Apple" gid="255" x="128" y="144" width="32" height="32"/>
-  <object id="8" name="Fruits" type="Apple" gid="255" x="144" y="128" width="32" height="32"/>
-  <object id="9" name="Fruits" type="Apple" gid="255" x="144" y="160" width="32" height="32"/>
-  <object id="10" name="Fruits" type="Apple" gid="255" x="160" y="144" width="32" height="32"/>
-  <object id="11" name="Fruits" type="Apple" gid="255" x="176" y="128" width="32" height="32"/>
-  <object id="12" name="Fruits" type="Apple" gid="255" x="176" y="160" width="32" height="32"/>
-  <object id="13" name="Fruits" type="Apple" gid="255" x="192" y="144" width="32" height="32"/>
-  <object id="14" name="Fruits" type="Apple" gid="255" x="208" y="128" width="32" height="32"/>
-  <object id="15" name="Fruits" type="Apple" gid="255" x="208" y="160" width="32" height="32"/>
-  <object id="16" name="Fruits" type="Apple" gid="255" x="240" y="240" width="32" height="32"/>
-  <object id="17" name="Fruits" type="Apple" gid="255" x="256" y="224" width="32" height="32"/>
-  <object id="18" name="Fruits" type="Apple" gid="255" x="272" y="240" width="32" height="32"/>
-  <object id="19" name="Fruits" type="Apple" gid="255" x="288" y="224" width="32" height="32"/>
-  <object id="20" name="Fruits" type="Apple" gid="255" x="304" y="240" width="32" height="32"/>
-  <object id="21" name="Fruits" type="Apple" gid="255" x="320" y="224" width="32" height="32"/>
-  <object id="22" name="Fruits" type="Apple" gid="255" x="432" y="64" width="32" height="32"/>
-  <object id="23" name="Fruits" type="Apple" gid="255" x="416" y="80" width="32" height="32"/>
-  <object id="24" name="Fruits" type="Apple" gid="255" x="592" y="80" width="32" height="32"/>
-  <object id="25" name="Fruits" type="Apple" gid="255" x="448" y="80" width="32" height="32"/>
  </objectgroup>
  <layer id="11" name="OnewayTiles" width="40" height="23">
   <data encoding="csv">
@@ -209,4 +183,30 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="15" name="Fruits">
+  <object id="2" name="Fruits" type="Apple" gid="256" x="80" y="160" width="32" height="32"/>
+  <object id="3" name="Fruits" type="Apple" gid="256" x="80" y="128" width="32" height="32"/>
+  <object id="4" name="Fruits" type="Apple" gid="256" x="112" y="128" width="32" height="32"/>
+  <object id="5" name="Fruits" type="Apple" gid="256" x="96" y="144" width="32" height="32"/>
+  <object id="6" name="Fruits" type="Apple" gid="256" x="112" y="160" width="32" height="32"/>
+  <object id="7" name="Fruits" type="Apple" gid="256" x="128" y="144" width="32" height="32"/>
+  <object id="8" name="Fruits" type="Apple" gid="256" x="144" y="128" width="32" height="32"/>
+  <object id="9" name="Fruits" type="Apple" gid="256" x="144" y="160" width="32" height="32"/>
+  <object id="10" name="Fruits" type="Apple" gid="256" x="160" y="144" width="32" height="32"/>
+  <object id="11" name="Fruits" type="Apple" gid="256" x="176" y="128" width="32" height="32"/>
+  <object id="12" name="Fruits" type="Apple" gid="256" x="176" y="160" width="32" height="32"/>
+  <object id="13" name="Fruits" type="Apple" gid="256" x="192" y="144" width="32" height="32"/>
+  <object id="14" name="Fruits" type="Apple" gid="256" x="208" y="128" width="32" height="32"/>
+  <object id="15" name="Fruits" type="Apple" gid="256" x="208" y="160" width="32" height="32"/>
+  <object id="16" name="Fruits" type="Apple" gid="256" x="240" y="240" width="32" height="32"/>
+  <object id="17" name="Fruits" type="Apple" gid="256" x="256" y="224" width="32" height="32"/>
+  <object id="18" name="Fruits" type="Apple" gid="256" x="272" y="240" width="32" height="32"/>
+  <object id="19" name="Fruits" type="Apple" gid="256" x="288" y="224" width="32" height="32"/>
+  <object id="20" name="Fruits" type="Apple" gid="256" x="304" y="240" width="32" height="32"/>
+  <object id="21" name="Fruits" type="Apple" gid="256" x="320" y="224" width="32" height="32"/>
+  <object id="22" name="Fruits" type="Apple" gid="256" x="432" y="64" width="32" height="32"/>
+  <object id="23" name="Fruits" type="Apple" gid="256" x="416" y="80" width="32" height="32"/>
+  <object id="24" name="Fruits" type="Apple" gid="256" x="592" y="80" width="32" height="32"/>
+  <object id="25" name="Fruits" type="Apple" gid="256" x="448" y="80" width="32" height="32"/>
+ </objectgroup>
 </map>

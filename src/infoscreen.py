@@ -33,4 +33,4 @@ class Infoscreen:
 		self.timer()
 		self.background_sprite.update(dt)
 		self.background_sprite.draw(self.display_surface)
-		self.display_surface.blit(self.screen_img, (176, 124))
+		self.display_surface.blit(self.screen_img, (176, 118))

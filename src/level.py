@@ -81,7 +81,7 @@ class Level:
 
     def setup_Enter(self):
         self.enter_sound.play()
-        Player_effect(self.player_pos, 'Enter', [self.effect_sprites, self.visible_sprites], self.create_player)
+        Player_effect(self.player_pos, 'Enter', [self.effect_sprites], self.create_player)
 
     def setup_layout(self):
         Background([self.background_sprite])
@@ -130,17 +130,39 @@ class Level:
                 SpikeHead((obj.x, obj.y), obj.type, [self.visible_sprites, self.damageable_sprites, self.spikehead_sprites,self.hitbox_sprites], self.obstacle_sprites)
             if obj.name in ('Saw'):
                 Saw((obj.x, obj.y), obj.type, [self.saw_sprites, self.damageable_sprites, self.hitbox_sprites], self.block_sprites)
-       
+            if obj.name in ('Center-C'):
+                if obj.type == '64':
+                    radius = 64
+                elif obj.type == '48':
+                    radius = 48
+                elif obj.type == '32':
+                    radius = 32
+                SpikeCenter((obj.x, obj.y), radius, 'C', [self.entity_sprites], self.create_ball, self.create_chain)
+            if obj.name in ('Center-A'):
+                if obj.type == '64':
+                    radius = 64
+                elif obj.type == '48':
+                    radius = 48
+                elif obj.type == '32':
+                    radius = 32
+                SpikeCenter((obj.x, obj.y), radius, 'A', [self.entity_sprites], self.create_ball, self.create_chain)
+
     def create_player(self):
         Player(self.player_pos, [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.rockhead_sprites, self.create_dead_effect)
 
     def create_dead_effect(self):
         player = self.player.sprite
         self.dead_sound.play()
-        Player_effect(player.rect.center, 'Dead', [self.effect_sprites, self.visible_sprites], self.create_player)
+        Player_effect(player.rect.center, 'Dead', [self.effect_sprites], self.create_player)
 
     def create_fire(self, pos):
         Fire((pos[0]+3, pos[1]+3), [self.damageable_sprites, self.entity_sprites, self.hitbox_sprites])
+
+    def create_ball(self, center, radius, type):
+        SpikeBall(center, radius, type, [self.visible_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites])
+
+    def create_chain(self, center, radius, type):
+        Chain(center, radius, type, [self.visible_sprites, self.entity_sprites])
 
     def check_collect(self):
         if self.collectable_sprites:
@@ -148,7 +170,7 @@ class Level:
             for sprite in self.collectable_sprites.sprites():
                 if sprite.hitbox.colliderect(player.hitbox):
                     sprite.collect_sound.play()
-                    Collect_effect(sprite.rect.topleft, [self.effect_sprites, self.visible_sprites])
+                    Collect_effect(sprite.rect.topleft, [self.effect_sprites])
                     sprite.remove()
                     sprite.kill()
 
@@ -244,8 +266,9 @@ class Level:
             self.player.draw(self.display_surface)
 
         # Fire
-
         self.fire_sprites.draw(self.display_surface)
+        # Effect
+        self.effect_sprites.draw(self.display_surface)
 
         # Checks
         self.get_hitbox_visible()

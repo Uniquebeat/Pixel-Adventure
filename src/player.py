@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = pygame.image.load('graphics/player/Idle/a.png').convert_alpha()
         self.rect = self.image.get_rect(center=pos)
-        self.hitbox = pygame.Rect(self.rect.x+8, self.rect.y+7, 17, 25)
+        self.hitbox = pygame.Rect(self.rect.x+8, self.rect.y+6, 17, 26)
         self.old_hitbox = self.hitbox.copy()
         self.tiles = tiles
         self.oneway_tiles = oneway_tiles
@@ -101,10 +101,10 @@ class Player(pygame.sprite.Sprite):
     def get_input(self, dt):
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+        if keys[pygame.K_f] or keys[pygame.K_RIGHT]:
             self.direction.x = 1
             self.facing_right = True
-        elif keys[pygame.K_a] or keys[pygame.K_LEFT]:
+        elif keys[pygame.K_s] or keys[pygame.K_LEFT]:
             self.direction.x = -1
             self.facing_right = False
         else:
@@ -222,12 +222,12 @@ class Player(pygame.sprite.Sprite):
             self.rockhead_collision('vertical')
             self.oneway_collision()
             self.rect.x = self.hitbox.x - 8
-            self.rect.y = self.hitbox.y - 7
+            self.rect.y = self.hitbox.y - 6
 
     def apply_gravity(self, dt):
         self.direction.y += self.gravity * dt
-        if self.direction.y >= 6.3:
-            self.direction.y = 6.3
+        if self.direction.y >= 5:
+            self.direction.y = 5
         self.pos.y += self.direction.y
         self.hitbox.y = round(self.pos.y)
 
@@ -237,7 +237,6 @@ class Player(pygame.sprite.Sprite):
             self.jump_sound.play()
 
     def wall_jump(self):
-        self.direction.x *= -8
         self.direction.y = self.jumpforce
         self.jump_sound.play()
         self.wall_jumped = True

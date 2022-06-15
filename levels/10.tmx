@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="TileSets/Terrain (16x16).tsx"/>
  <tileset firstgid="243" source="TileSets/Player.tsx"/>
  <tileset firstgid="244" source="TileSets/DamageTiles.tsx"/>
- <tileset firstgid="255" source="TileSets/Fruits.tsx"/>
+ <tileset firstgid="256" source="TileSets/Fruits.tsx"/>
  <layer id="1" name="StaticTiles" width="40" height="23">
   <data encoding="csv">
 36,37,101,102,103,221,222,222,222,222,222,222,222,222,181,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,201,46,46,46,46,46,46,5,
@@ -36,33 +36,6 @@
  </objectgroup>
  <objectgroup id="15" name="SpikeHead">
   <object id="31" name="SpikeHead" type="V" gid="252" x="548.545" y="73.4545" width="54" height="52"/>
- </objectgroup>
- <objectgroup id="13" name="Fruits">
-  <object id="3" name="Fruits" type="Pineapple" gid="258" x="336" y="240" width="32" height="32"/>
-  <object id="4" name="Fruits" type="Pineapple" gid="258" x="304" y="240" width="32" height="32"/>
-  <object id="5" name="Fruits" type="Pineapple" gid="258" x="272" y="240" width="32" height="32"/>
-  <object id="6" name="Fruits" type="Pineapple" gid="258" x="240" y="240" width="32" height="32"/>
-  <object id="7" name="Fruits" type="Pineapple" gid="258" x="208" y="240" width="32" height="32"/>
-  <object id="8" name="Fruits" type="Pineapple" gid="258" x="176" y="240" width="32" height="32"/>
-  <object id="9" name="Fruits" type="Pineapple" gid="258" x="80" y="256" width="32" height="32"/>
-  <object id="10" name="Fruits" type="Pineapple" gid="258" x="80" y="224" width="32" height="32"/>
-  <object id="11" name="Fruits" type="Pineapple" gid="258" x="80" y="192" width="32" height="32"/>
-  <object id="12" name="Fruits" type="Pineapple" gid="258" x="80" y="160" width="32" height="32"/>
-  <object id="13" name="Fruits" type="Pineapple" gid="258" x="80" y="128" width="32" height="32"/>
-  <object id="14" name="Fruits" type="Pineapple" gid="258" x="80" y="96" width="32" height="32"/>
-  <object id="15" name="Fruits" type="Pineapple" gid="258" x="16" y="112" width="32" height="32"/>
-  <object id="16" name="Fruits" type="Pineapple" gid="258" x="128" y="96" width="32" height="32"/>
-  <object id="17" name="Fruits" type="Pineapple" gid="258" x="144" y="80" width="32" height="32"/>
-  <object id="18" name="Fruits" type="Pineapple" gid="258" x="160" y="96" width="32" height="32"/>
-  <object id="19" name="Fruits" type="Pineapple" gid="258" x="224" y="96" width="32" height="32"/>
-  <object id="20" name="Fruits" type="Pineapple" gid="258" x="320" y="128" width="32" height="32"/>
-  <object id="21" name="Fruits" type="Pineapple" gid="258" x="336" y="128" width="32" height="32"/>
-  <object id="22" name="Fruits" type="Pineapple" gid="258" x="336" y="144" width="32" height="32"/>
-  <object id="23" name="Fruits" type="Pineapple" gid="258" x="320" y="144" width="32" height="32"/>
-  <object id="24" name="Fruits" type="Pineapple" gid="258" x="432" y="96" width="32" height="32"/>
-  <object id="25" name="Fruits" type="Pineapple" gid="258" x="592" y="144" width="32" height="32"/>
-  <object id="26" name="Fruits" type="Pineapple" gid="258" x="528" y="224" width="32" height="32"/>
-  <object id="27" name="Fruits" type="Pineapple" gid="258" x="592" y="304" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="14" name="RockHead">
   <object id="29" name="RockHead" type="V" gid="250" x="75" y="53" width="42" height="42"/>
@@ -203,4 +176,31 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="13" name="Fruits">
+  <object id="3" name="Fruits" type="Pineapple" gid="259" x="336" y="240" width="32" height="32"/>
+  <object id="4" name="Fruits" type="Pineapple" gid="259" x="304" y="240" width="32" height="32"/>
+  <object id="5" name="Fruits" type="Pineapple" gid="259" x="272" y="240" width="32" height="32"/>
+  <object id="6" name="Fruits" type="Pineapple" gid="259" x="240" y="240" width="32" height="32"/>
+  <object id="7" name="Fruits" type="Pineapple" gid="259" x="208" y="240" width="32" height="32"/>
+  <object id="8" name="Fruits" type="Pineapple" gid="259" x="176" y="240" width="32" height="32"/>
+  <object id="9" name="Fruits" type="Pineapple" gid="259" x="80" y="256" width="32" height="32"/>
+  <object id="10" name="Fruits" type="Pineapple" gid="259" x="80" y="224" width="32" height="32"/>
+  <object id="11" name="Fruits" type="Pineapple" gid="259" x="80" y="192" width="32" height="32"/>
+  <object id="12" name="Fruits" type="Pineapple" gid="259" x="80" y="160" width="32" height="32"/>
+  <object id="13" name="Fruits" type="Pineapple" gid="259" x="80" y="128" width="32" height="32"/>
+  <object id="14" name="Fruits" type="Pineapple" gid="259" x="80" y="96" width="32" height="32"/>
+  <object id="15" name="Fruits" type="Pineapple" gid="259" x="16" y="112" width="32" height="32"/>
+  <object id="16" name="Fruits" type="Pineapple" gid="259" x="128" y="96" width="32" height="32"/>
+  <object id="17" name="Fruits" type="Pineapple" gid="259" x="144" y="80" width="32" height="32"/>
+  <object id="18" name="Fruits" type="Pineapple" gid="259" x="160" y="96" width="32" height="32"/>
+  <object id="19" name="Fruits" type="Pineapple" gid="259" x="224" y="96" width="32" height="32"/>
+  <object id="20" name="Fruits" type="Pineapple" gid="259" x="320" y="128" width="32" height="32"/>
+  <object id="21" name="Fruits" type="Pineapple" gid="259" x="336" y="128" width="32" height="32"/>
+  <object id="22" name="Fruits" type="Pineapple" gid="259" x="336" y="144" width="32" height="32"/>
+  <object id="23" name="Fruits" type="Pineapple" gid="259" x="320" y="144" width="32" height="32"/>
+  <object id="24" name="Fruits" type="Pineapple" gid="259" x="432" y="96" width="32" height="32"/>
+  <object id="25" name="Fruits" type="Pineapple" gid="259" x="592" y="144" width="32" height="32"/>
+  <object id="26" name="Fruits" type="Pineapple" gid="259" x="528" y="224" width="32" height="32"/>
+  <object id="27" name="Fruits" type="Pineapple" gid="259" x="592" y="304" width="32" height="32"/>
+ </objectgroup>
 </map>
