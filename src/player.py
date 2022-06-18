@@ -3,9 +3,10 @@ from src.support import import_folder
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, group, tiles, oneway_tiles, rockhead_sprites, create_dead_effect):
+    def __init__(self, pos, character, group, tiles, oneway_tiles, rockhead_sprites, create_dead_effect):
         super().__init__(group)
-        self.image = pygame.image.load('graphics/player/Idle/a.png').convert_alpha()
+        self.character = character
+        self.image = pygame.image.load(f'graphics/player/{self.character}/Idle/a.png').convert_alpha()
         self.rect = self.image.get_rect(center=pos)
         self.hitbox = pygame.Rect(self.rect.x+8, self.rect.y+6, 17, 26)
         self.old_hitbox = self.hitbox.copy()
@@ -49,7 +50,7 @@ class Player(pygame.sprite.Sprite):
         self.animations = {
                 'Idle': [], 'Run': [], 'Jump': [], 'Fall': [], 'On_wall': [], 'DoubleJump': [], 'Hurt':[]
         }
-        character_path = 'graphics/player/'
+        character_path = f'graphics/player/{self.character}/'
         for animation in self.animations.keys():
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)

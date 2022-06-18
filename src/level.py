@@ -45,6 +45,7 @@ class Level:
         self.fire_sprites = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.hitbox_sprites = pygame.sprite.Group()
+        self.spikeball_sprites = pygame.sprite.Group()
         
         # audio
         self.enter_sound = pygame.mixer.Sound('audio/enter.wav')
@@ -137,7 +138,7 @@ class Level:
                     radius = 48
                 elif obj.type == '32':
                     radius = 32
-                SpikeCenter((obj.x, obj.y), radius, 'C', [self.entity_sprites], self.create_ball, self.create_chain)
+                SpikeCenter((obj.x, obj.y), radius, 'C', [self.visible_sprites, self.entity_sprites, self.obstacle_sprites], self.create_ball, self.create_chain)
             if obj.name in ('Center-A'):
                 if obj.type == '64':
                     radius = 64
@@ -145,10 +146,10 @@ class Level:
                     radius = 48
                 elif obj.type == '32':
                     radius = 32
-                SpikeCenter((obj.x, obj.y), radius, 'A', [self.entity_sprites], self.create_ball, self.create_chain)
+                SpikeCenter((obj.x, obj.y), radius, 'A', [self.visible_sprites, self.entity_sprites, self.obstacle_sprites], self.create_ball, self.create_chain)
 
     def create_player(self):
-        Player(self.player_pos, [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.rockhead_sprites, self.create_dead_effect)
+        Player(self.player_pos, 'Pink Man', [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.rockhead_sprites, self.create_dead_effect)
 
     def create_dead_effect(self):
         player = self.player.sprite
@@ -157,12 +158,12 @@ class Level:
 
     def create_fire(self, pos):
         Fire((pos[0]+3, pos[1]+3), [self.damageable_sprites, self.entity_sprites, self.hitbox_sprites])
+    
+    def create_chain(self, center, radius, type):
+        Chain(center, radius, type, [self.spikeball_sprites])
 
     def create_ball(self, center, radius, type):
-        SpikeBall(center, radius, type, [self.visible_sprites, self.entity_sprites, self.damageable_sprites, self.hitbox_sprites])
-
-    def create_chain(self, center, radius, type):
-        Chain(center, radius, type, [self.visible_sprites, self.entity_sprites])
+        SpikeBall(center, radius, type, [self.spikeball_sprites, self.damageable_sprites, self.hitbox_sprites])
 
     def check_collect(self):
         if self.collectable_sprites:
@@ -255,6 +256,7 @@ class Level:
         self.effect_sprites.update()
         # Entity
         self.entity_sprites.update(dt)
+        self.spikeball_sprites.update(dt)
 
         # DRAW METHOD
         self.saw_sprites.draw(self.display_surface)
@@ -269,6 +271,8 @@ class Level:
         self.fire_sprites.draw(self.display_surface)
         # Effect
         self.effect_sprites.draw(self.display_surface)
+        # Spikeball
+        self.spikeball_sprites.draw(self.display_surface)
 
         # Checks
         self.get_hitbox_visible()

@@ -19,6 +19,10 @@ level_18 = {'pos':(464, 160), 'content': 'levels/18.tmx', 'number': 18, 'next_lv
 level_19 = {'pos':(144, 224), 'content': 'levels/19.tmx', 'number': 19, 'next_lvl': 20}
 level_20 = {'pos':(208, 224), 'content': 'levels/20.tmx', 'number': 20, 'next_lvl': 21}
 level_21 = {'pos':(272, 224), 'content': 'levels/21.tmx', 'number': 21, 'next_lvl': 22}
+level_22 = {'pos':(336, 224), 'content': 'levels/22.tmx', 'number': 22, 'next_lvl': 23}
+level_22 = {'pos':(336, 224), 'content': 'levels/22.tmx', 'number': 22, 'next_lvl': 23}
+level_23 = {'pos':(400, 224), 'content': 'levels/23.tmx', 'number': 23, 'next_lvl': 24}
+level_24 = {'pos':(464, 224), 'content': 'levels/24.tmx', 'number': 24, 'next_lvl': 25}
 
 levels = {
         0:level_1,
@@ -41,4 +45,7 @@ levels = {
         17:level_18,
         18:level_19,
         19:level_20,
-        20:level_21}
+        20:level_21,
+        21:level_22,
+        22:level_23,
+        23:level_24}

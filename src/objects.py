@@ -667,7 +667,7 @@ class Fire(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.index += self.speed * dt
-        if self.index >= 5:
+        if self.index >= 7:
             self.kill()
 
 
@@ -679,18 +679,18 @@ class SpikeBall(pygame.sprite.Sprite):
         self.radius = radius
         self.center = pygame.math.Vector2(center, center)
         self.rect = self.image.get_rect(topleft=(self.radius, self.radius))
-        self.hitbox = pygame.Rect(self.rect.x+2, self.rect.y+2, 23, 23)
+        self.hitbox = pygame.Rect(self.rect.x+5, self.rect.y+5, 17, 17)
         self.angle = 0
 
     def move(self, dt):
-        self.hitbox.x = self.radius * math.cos(self.angle) + self.center.x -5
-        self.hitbox.y = self.radius * math.sin(self.angle) + self.center.y -5
+        self.hitbox.x = self.radius * math.cos(self.angle) + self.center.x
+        self.hitbox.y = self.radius * math.sin(self.angle) + self.center.y
         if self.type == 'C':
             self.angle += 2 * dt
         elif self.type == 'A':
             self.angle -= 2 * dt
-        self.rect.x = self.hitbox.x - 2
-        self.rect.y = self.hitbox.y - 2
+        self.rect.x = self.hitbox.x - 5
+        self.rect.y = self.hitbox.y - 5
 
     def update(self, dt):
         self.move(dt)
@@ -723,8 +723,10 @@ class Chain(pygame.sprite.Sprite):
 class SpikeCenter(pygame.sprite.Sprite):
     def __init__(self, pos, radius, type, groups, create_ball, create_chain):
         super().__init__(groups)
-        self.image = pygame.Surface((16, 16))
+        self.image = pygame.image.load('graphics/Traps/SpikeBall/center.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
+        self.hitbox= self.rect
+        self.old_hitbox = self.hitbox.copy()
         self.radius = radius
         self.type = type
         self.create_ball = create_ball
