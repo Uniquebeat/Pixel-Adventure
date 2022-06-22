@@ -11,8 +11,9 @@ from src.game_data import *
 
 
 class Level:
-    def __init__(self, content, pos, next_lvl, create_overworld, recreate_level, create_next_level):
+    def __init__(self, character, content, pos, next_lvl, create_overworld, recreate_level, create_next_level):
         self.display_surface = pygame.display.get_surface()
+        self.character = character
         self.create_overworld = create_overworld
         self.recreate_level = recreate_level
         self.create_next_level = create_next_level
@@ -76,7 +77,7 @@ class Level:
             if not self.pressed:
                 self.pressed = True
                 self.back_sound.play()
-                self.create_overworld(self.pos)
+                self.create_overworld(self.pos, self.character)
         elif self.pressed:
             self.pressed = False
 
@@ -149,7 +150,7 @@ class Level:
                 SpikeCenter((obj.x, obj.y), radius, 'A', [self.visible_sprites, self.entity_sprites, self.obstacle_sprites], self.create_ball, self.create_chain)
 
     def create_player(self):
-        Player(self.player_pos, 'Pink Man', [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.rockhead_sprites, self.create_dead_effect)
+        Player(self.player_pos, self.character, [self.player, self.hitbox_sprites], self.obstacle_sprites, self.oneway_sprites, self.rockhead_sprites, self.create_dead_effect)
 
     def create_dead_effect(self):
         player = self.player.sprite
@@ -296,13 +297,13 @@ class Level:
         elif self.game_state == 'Dead':
             self.dead_timer()
         elif self.game_state == 'Revive':
-            self.recreate_level(self.pos, self.content, self.next_lvl)
+            self.recreate_level(self.character, self.pos, self.content, self.next_lvl)
         elif self.game_state == 'Next':
             if self.next_lvl <= len(levels):
                 level = levels[self.next_lvl-1]
-                self.create_next_level(level['pos'], level['content'], level['next_lvl'])
+                self.create_next_level(self.character, level['pos'], level['content'], level['next_lvl'])
             else:
-                self.create_overworld(self.pos)
+                self.create_overworld(self.pos, self.character)
 
         debug('Level', self.level_data)
         debug('game_state', self.game_state, 18)

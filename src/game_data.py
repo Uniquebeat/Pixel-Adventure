@@ -49,3 +49,11 @@ levels = {
         21:level_22,
         22:level_23,
         23:level_24}
+
+
+character = {
+        0:'Mask Dude',
+        1:'Ninja Frog',
+        2:'PInk Man',
+        3:'Virtual Guy'
+}

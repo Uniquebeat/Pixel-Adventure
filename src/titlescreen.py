@@ -1,12 +1,12 @@
-import pygame
+import pygame, json
 from src.overworld import Select, Node
 from src.objects import Basic_Tile
 from src.background import Background
-from src.game_data import level_1
+from src.game_data import level_1, character
 
 
 class Titlescreen:
-    def __init__(self, pos, create_level, create_overworld, create_helpscreen, create_infoscreen):
+    def __init__(self, pos, create_level, create_overworld, create_helpscreen, create_infoscreen, create_skinscreen):
         self.display_surface = pygame.display.get_surface()
         self.pos = pos
         self.title_img = pygame.image.load('graphics/Titlescreen/title.png').convert_alpha()
@@ -14,6 +14,7 @@ class Titlescreen:
         self.create_overworld = create_overworld
         self.create_helpscreen = create_helpscreen
         self.create_infoscreen = create_infoscreen
+        self.create_skinscreen = create_skinscreen
         #sprites
         self.play_sprite = pygame.sprite.GroupSingle()
         self.level_sprite = pygame.sprite.GroupSingle()
@@ -24,6 +25,14 @@ class Titlescreen:
         self.select_sprite = pygame.sprite.GroupSingle()
         self.node_sprite = pygame.sprite.GroupSingle()
         self.load()
+        self.character_index = {'index': 0}
+        try:
+            with open('graphics/player/character_index.txt') as data:
+                self.character_index = json.load(data)
+        except:
+            with open('graphics/player/character_index.txt', 'w') as data:
+                json.dump(self.character_index, data)
+        self.character = character[self.character_index['index']]
 
         # audio
         self.selected_sound = pygame.mixer.Sound('audio/selected.wav')
@@ -48,16 +57,19 @@ class Titlescreen:
             if select.rect.colliderect(play.rect):
                 self.selected_sound.play()
                 node = Node(level_1['pos'], level_1['content'], level_1['next_lvl'], self.node_sprite)
-                self.create_level(node)
+                self.create_level(node, self.character)
             elif select.rect.colliderect(level):
                 self.selected_sound.play()
-                self.create_overworld((144, 32))
+                self.create_overworld((144, 32), self.character)
             elif select.rect.colliderect(help):
                 self.selected_sound.play()
                 self.create_helpscreen()
             elif select.rect.colliderect(info):
                 self.selected_sound.play()
                 self.create_infoscreen()
+        elif keys[pygame.K_RSHIFT] or keys[pygame.K_LSHIFT]:
+            self.selected_sound.play()
+            self.create_skinscreen(self.character_index['index'])
 
     def run(self, dt):
         self.input()

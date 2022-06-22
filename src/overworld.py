@@ -78,8 +78,9 @@ class Select(pygame.sprite.Sprite):
 
 
 class Overworld:
-    def __init__(self, pos, create_level, create_titlescreen):
+    def __init__(self, character, pos, create_level, create_titlescreen):
         self.display_surface = pygame.display.get_surface()
+        self.character = character
         self.pos = pos
         self.create_level = create_level
         self.create_titlescreen = create_titlescreen
@@ -106,7 +107,7 @@ class Overworld:
         for node in self.node_sprites.sprites():
             if keys[pygame.K_SPACE] and node.rect.colliderect(select.rect):
                 self.selected_sound.play()
-                self.create_level(node)
+                self.create_level(node, self.character)
 
         if keys[pygame.K_BACKSPACE]:
             self.selected_sound.play()
