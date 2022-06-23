@@ -23,6 +23,7 @@ level_22 = {'pos':(336, 224), 'content': 'levels/22.tmx', 'number': 22, 'next_lv
 level_22 = {'pos':(336, 224), 'content': 'levels/22.tmx', 'number': 22, 'next_lvl': 23}
 level_23 = {'pos':(400, 224), 'content': 'levels/23.tmx', 'number': 23, 'next_lvl': 24}
 level_24 = {'pos':(464, 224), 'content': 'levels/24.tmx', 'number': 24, 'next_lvl': 25}
+level_25 = {'pos':(144, 288), 'content': 'levels/25.tmx', 'number': 25, 'next_lvl': 26}
 
 levels = {
         0:level_1,
@@ -48,7 +49,8 @@ levels = {
         20:level_21,
         21:level_22,
         22:level_23,
-        23:level_24}
+        23:level_24,
+        24:level_25}
 
 
 character = {
