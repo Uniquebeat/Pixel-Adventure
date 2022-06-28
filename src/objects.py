@@ -664,6 +664,9 @@ class Fire(pygame.sprite.Sprite):
         self.hitbox = self.rect
         self.index = 0
         self.speed = 12
+        self.fire_sound = pygame.mixer.Sound('audio/fire.wav')
+        self.fire_sound.set_volume(0.6)
+        self.fire_sound.play()
 
     def update(self, dt):
         self.index += self.speed * dt
