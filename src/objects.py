@@ -6,7 +6,7 @@ from src.support import import_folder
 class Basic_Tile(pygame.sprite.Sprite):
     def __init__(self, pos, group, surface=pygame.Surface((tile_size, tile_size))):
         super().__init__(group)
-        self.image = surface
+        self.image = surface.convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect
         self.old_hitbox = self.hitbox.copy()
@@ -17,7 +17,7 @@ class Basic_Tile(pygame.sprite.Sprite):
 class Spike_Tile(pygame.sprite.Sprite):
     def __init__(self, pos, type, group, surface=pygame.Surface((tile_size, tile_size))):
         super().__init__(group)
-        self.image = surface
+        self.image = surface.convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         if type == 'bottom':
             self.hitbox = pygame.Rect(self.rect.x+3, self.rect.y+11, 10, 4)
@@ -31,7 +31,7 @@ class Spike_Tile(pygame.sprite.Sprite):
 class OneWay_Tile(pygame.sprite.Sprite):
     def __init__(self, pos, group, surface):
         super().__init__(group)
-        self.image = surface
+        self.image = surface.convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = pygame.Rect(self.rect.x, self.rect.y, 16, 1)
 
@@ -89,12 +89,6 @@ class Saw(pygame.sprite.Sprite):
             self.direction = pygame.math.Vector2(1, 0)
         elif self.type == 'V':
             self.direction = pygame.math.Vector2(0, 1)
-        elif self.type == 'C':
-            self.direction = pygame.math.Vector2(1, 0)
-        elif self.type == 'A':
-            self.direction = pygame.math.Vector2(-1, 0)
-        elif self.type == 'Z':
-            self.direction = pygame.math.Vector2(0, 0)
         self.speed = 110
 
         # Animation
@@ -136,32 +130,6 @@ class Saw(pygame.sprite.Sprite):
                     self.pos.y = self.hitbox.y
                     self.direction.y = 1
 
-    def clock(self, change):
-        for sprite in self.blocktiles:
-            if self.hitbox.colliderect(sprite.hitbox):
-                self.stop = True
-                self.stop_time = pygame.time.get_ticks()
-                if self.direction.x > 0:
-                    self.hitbox.right = sprite.hitbox.left
-                    self.pos.x = self.hitbox.x
-                    self.direction.x = 0 * change
-                    self.direction.y = 1 * change
-                elif self.direction.y > 0:
-                    self.hitbox.bottom = sprite.hitbox.top
-                    self.pos.y = self.hitbox.y
-                    self.direction.x = -1 * change
-                    self.direction.y = 0 * change
-                elif self.direction.x < 0:
-                    self.hitbox.left = sprite.hitbox.right
-                    self.pos.x = self.hitbox.x
-                    self.direction.x = 0 * change
-                    self.direction.y = -1 * change
-                elif self.direction.y < 0:
-                    self.hitbox.top = sprite.hitbox.bottom
-                    self.pos.y = self.hitbox.y
-                    self.direction.x = 1 * change
-                    self.direction.y = 0 * change
-
     def move(self, dt):
         self.pos.x += self.direction.x * self.speed * dt
         self.hitbox.x = round(self.pos.x)
@@ -181,10 +149,6 @@ class Saw(pygame.sprite.Sprite):
             self.horizontal()
         elif self.type == 'V':
             self.vertical()
-        elif self.type == 'C':
-            self.clock(1)
-        elif self.type == 'A':
-            self.clock(-1)
 
     def update(self, dt):
         self.check_type()
@@ -742,3 +706,34 @@ class SpikeCenter(pygame.sprite.Sprite):
             radius -= 8
             self.create_chain(self.rect.topleft, radius, self.type)
         self.create_ball(self.rect.topleft, self.radius, self.type)
+
+class End(pygame.sprite.Sprite):
+    def __init__(self, pos, groups):
+        super().__init__(groups)
+        self.image = pygame.image.load('graphics/End/Off/0.png').convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos)
+        self.hitbox = pygame.Rect(self.rect.x+16, self.rect.y+20, 32, 44)
+
+        self.frame_index = 0
+        self.animation_speed = 18
+        self.status = 'Off'
+        self.import_assets()
+
+    def import_assets(self):
+        self.animations = {
+                'On' : [], 'Off': []
+        }
+        path = 'graphics/End/'
+        for animation in self.animations.keys():
+            full_path = path + animation
+            self.animations[animation] = import_folder(full_path)
+
+    def animate(self, dt):
+        animations = self.animations[self.status]
+        self.frame_index += self.animation_speed * dt
+        if self.frame_index >= len(animations):
+            self.frame_index = 0
+        self.image = animations[int(self.frame_index)]
+
+    def update(self, dt):
+        self.animate(dt)

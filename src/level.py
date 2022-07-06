@@ -26,6 +26,7 @@ class Level:
         self.level_data = load_pygame(self.content)
         self.visible = False
         self.pressed = False
+        self.sounded = False
 
         # set the sprite group
         self.background_sprite = pygame.sprite.GroupSingle()
@@ -48,6 +49,7 @@ class Level:
         self.player = pygame.sprite.GroupSingle()
         self.hitbox_sprites = pygame.sprite.Group()
         self.spikeball_sprites = pygame.sprite.Group()
+        self.end_sprite = pygame.sprite.GroupSingle()
         
         # audio
         self.enter_sound = pygame.mixer.Sound('audio/enter.wav')
@@ -60,6 +62,8 @@ class Level:
         self.bounce_sound.set_volume(0.6)
         self.back_sound = pygame.mixer.Sound('audio/selected.wav')
         self.back_sound.set_volume(0.6)
+        self.end_sound = pygame.mixer.Sound('audio/end.wav')
+        self.end_sound.set_volume(0.8)
 
         # setup level
         self.timer_index = 0
@@ -127,6 +131,8 @@ class Level:
                     FallingPlatform((obj.x, obj.y), [self.visible_sprites, self.entity_sprites, self.falling_sprites, self.obstacle_sprites, self.hitbox_sprites])
                 if obj.type in ('Fire'):
                     FirePlatform((obj.x, obj.y), [self.entity_sprites, self.fire_sprites, self.obstacle_sprites, self.hitbox_sprites], self.create_fire)
+                if obj.type in ('End'):
+                    End((obj.x, obj.y), [self.visible_sprites, self.entity_sprites, self.end_sprite])
             if obj.name in ('RockHead'):
                 RockHead((obj.x, obj.y), obj.type, [self.visible_sprites, self.rockhead_sprites, self.hitbox_sprites], self.obstacle_sprites)
             if obj.name in ('SpikeHead'):
@@ -220,6 +226,17 @@ class Level:
                 if player.hitbox.colliderect(sprite.landbox) and sprite.status == 'Off':
                     sprite.status = 'Hit'
 
+    def check_end(self):
+        if self.end_sprite:
+            player = self.player.sprite
+            end = self.end_sprite.sprite
+            if player.hitbox.colliderect(end.hitbox):
+                end.status = 'On'
+                Basic_Tile((193, 48), [self.visible_sprites], pygame.image.load('graphics/Titlescreen/endscreen.png'))
+                if self.sounded == False:
+                    self.end_sound.play()
+                    self.sounded = True
+
     def check_game_stage(self):
         player = self.player.sprite
         if player.alive == False:
@@ -288,6 +305,7 @@ class Level:
             self.check_falling()
             self.check_game_stage()
             self.check_fire()
+            self.check_end()
             self.rockhead_sprites.update(dt)
             self.spikehead_sprites.update(dt)
             self.saw_sprites.update(dt)
@@ -304,7 +322,7 @@ class Level:
                 level = levels[self.next_lvl-1]
                 self.create_next_level(self.character, level['pos'], level['content'], level['next_lvl'])
             else:
-                self.create_overworld(self.pos, self.character)
+                self.create_next_level(self.character, (464, 288), 'levels/bye.tmx', 1)
 
         debug('Level', self.level_data)
         debug('game_state', self.game_state, 18)
