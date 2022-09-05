@@ -24,52 +24,51 @@ class Selected(pygame.sprite.Sprite):
 			self.rect = self.image.get_rect(topleft=(480, 148))
 
 class Select(pygame.sprite.Sprite):
-    def __init__(self, index, groups, surface):
-        super().__init__(groups)
-        self.image = surface.convert_alpha()
-        self.pressed = False
-        self.index = index
-        if self.index == 0:
-        	self.rect = self.image.get_rect(topleft=(96, 148))
-        elif self.index == 1:
-        	self.rect = self.image.get_rect(topleft=(224, 148))
-        elif self.index == 2:
-        	self.rect = self.image.get_rect(topleft=(352, 148))
-        elif self.index == 3:
-        	self.rect = self.image.get_rect(topleft=(480, 148))
+	def __init__(self, index, groups, surface):
+		super().__init__(groups)
+		self.image = surface.convert_alpha()
+		self.pressed = False
+		self.index = index
+		if self.index == 0:
+			self.rect = self.image.get_rect(topleft=(96, 148))
+		elif self.index == 1:
+			self.rect = self.image.get_rect(topleft=(224, 148))
+		elif self.index == 2:
+			self.rect = self.image.get_rect(topleft=(352, 148))
+		elif self.index == 3:
+			self.rect = self.image.get_rect(topleft=(480, 148))
 
-        # movement
-        self.direction = pygame.math.Vector2()
-        self.pos = pygame.math.Vector2(self.rect.topleft)
-        self.select_sound = pygame.mixer.Sound('audio/select.wav')
-        self.select_sound.set_volume(0.6)
+		# movement
+		self.direction = pygame.math.Vector2()
+		self.pos = pygame.math.Vector2(self.rect.topleft)
+		self.select_sound = pygame.mixer.Sound('audio/select.wav')
+		self.select_sound.set_volume(0.6)
 
-    def get_input(self):
-        keys = pygame.key.get_pressed()
+	def get_input(self):
+		keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_f] or keys[pygame.K_RIGHT]:
-            if not self.pressed:
-                self.select_sound.play()
-                self.pressed = True
-                self.rect.x += 128
-        elif keys[pygame.K_s] or keys[pygame.K_LEFT]:
-            if not self.pressed:
-                self.select_sound.play()
-                self.pressed = True
-                self.rect.x -= 128
-        elif self.pressed:
-           	self.pressed = False
+		if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+			if not self.pressed:
+				self.select_sound.play()
+				self.pressed = True
+				self.rect.x += 128
+		elif keys[pygame.K_a] or keys[pygame.K_LEFT]:
+			if not self.pressed:
+				self.select_sound.play()
+				self.pressed = True
+				self.rect.x -= 128
+		elif self.pressed:
+			self.pressed = False
 
-    def reset(self):
-    	if self.rect.x > 480:
-    		self.rect.x = 96
-    	elif self.rect.x < 96:
-    		self.rect.x = 480
-
-    def update(self):
-        self.get_input()
-        self.reset()
-
+	def reset(self):
+		if self.rect.x > 480:
+			self.rect.x = 96
+		elif self.rect.x < 96:
+			self.rect.x = 480
+			
+	def update(self):
+		self.get_input()
+		self.reset()
 
 class Skinscreen:
 	def __init__(self, index, create_titlescreen):

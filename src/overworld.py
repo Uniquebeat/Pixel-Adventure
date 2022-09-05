@@ -31,22 +31,22 @@ class Select(pygame.sprite.Sprite):
     def get_input(self):
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_f] or keys[pygame.K_RIGHT]:
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             if not self.pressed:
                 self.select_sound.play()
                 self.pressed = True
                 self.rect.x += 64
-        elif keys[pygame.K_s] or keys[pygame.K_LEFT]:
+        elif keys[pygame.K_a] or keys[pygame.K_LEFT]:
             if not self.pressed:
                 self.select_sound.play()
                 self.pressed = True
                 self.rect.x -= 64
-        elif keys[pygame.K_e] or keys[pygame.K_UP]:
+        elif keys[pygame.K_w] or keys[pygame.K_UP]:
             if not self.pressed:
                 self.select_sound.play()
                 self.pressed = True
                 self.rect.y -= 64
-        elif keys[pygame.K_d] or keys[pygame.K_DOWN]:
+        elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
             if not self.pressed:
                 self.select_sound.play()
                 self.pressed = True
